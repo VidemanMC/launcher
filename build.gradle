@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+    id "io.github.goooler.shadow" version "8.1.8"
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+application {
+    mainClass = "ru.videmanmc.launcher.Launcher"
+}
+
+javafx {
+    version = "22.0.1"
+    modules = [ 'javafx.controls', 'javafx.media']
+}
+
+java {
+    sourceCompatibility = "21"
+    targetCompatibility = "21"
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    jmcccVer = '3.1.4'
+    lombokVer = '1.18.30'
+}
+
+dependencies {
+    implementation "dev.3-3:jmccc:$jmcccVer"
+    implementation "dev.3-3:jmccc-mcdownloader:$jmcccVer"
+
+
+    implementation 'io.github.amayaframework:amaya-di:2.2.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}
+
+idea {
+    module {
+        downloadJavadoc(true)
+    }
+}
+
+shadowJar {
+
+    archiveBaseName.set(rootProject.name)
+    archiveVersion.set(version)
+    archiveClassifier.set(null)
+
+//    minimize()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+jar.enabled = false
+tasks.build.dependsOn(shadowJar)
