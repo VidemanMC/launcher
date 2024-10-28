@@ -60,5 +60,13 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
+tasks.named("processResources") {
+    filesMatching("info.properties") {
+        expand([
+                version: version
+        ])
+    }
+}
+
 jar.enabled = false
 tasks.build.dependsOn(shadowJar)
