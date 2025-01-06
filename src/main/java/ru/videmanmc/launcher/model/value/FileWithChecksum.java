@@ -1,11 +1,9 @@
 package ru.videmanmc.launcher.model.value;
 
-import java.util.Map;
-
 /**
  * This interface is used for getting files from some source.
  */
-public interface FileRepository {
+public interface FileWithChecksum {
 
-    Map<String, String> getFiles();
+    FilesChecksum calculateChecksum();
 }

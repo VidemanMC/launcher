@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.dto;
+package ru.videmanmc.launcher.model.value;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,15 +6,15 @@ import lombok.Setter;
 import java.io.File;
 
 /**
- * Settings that contains option for launcher and Minecraft.<br>
- * It s loaded at startup and unloaded at shutdown by {@link ru.videmanmc.launcher.repository.SettingsRepository}.
+ * Settings that contains option for launcher and Minecraft.
  */
 @Getter
 @Setter
 public class Settings {
 
-    public final static String MAIN_DIRECTORY_PATH = System.getProperty("user.home") + "/.videmanmc";
-    public final static String LAUNCHER_CONFIG_FILE_NAME = "/settings.yml";
+    public final static String MAIN_DIRECTORY_PATH = System.getProperty("user.home") + "/.videmanmc/";
+    public final static String CLIENT_SUBDIRECTORY_PATH = "client/";
+    public final static String LAUNCHER_CONFIG_FILE_NAME = "settings.yml";
 
     private GameSettings game = new GameSettings();
 
@@ -27,7 +27,7 @@ public class Settings {
 
         private boolean autoJoin;
 
-        private File directory = new File(MAIN_DIRECTORY_PATH, "/client");
+        private File directory = new File(MAIN_DIRECTORY_PATH, CLIENT_SUBDIRECTORY_PATH);
 
         private int ramMegabytes = 2;
 

@@ -23,9 +23,12 @@ public class MainScreen implements LauncherScreen {
         vbox.setAlignment(Pos.CENTER);
         vbox.setBackground(new Background(new BackgroundFill(Paint.valueOf("black"), new CornerRadii(10, 10, 10, 10, true), new Insets(-20))));
 
+        vbox.setOnMouseMoved(mouseEvent -> vbox.setBackground(new Background(new BackgroundFill(Paint.valueOf("black"), new CornerRadii(10, 10, 10, 10, true), new Insets(-50)))));
+        vbox.setOnMouseExited(mouseEvent -> vbox.setBackground(new Background(new BackgroundFill(Paint.valueOf("black"), new CornerRadii(10, 10, 10, 10, true), new Insets(-20)))));
+
+
         Scene scene = new Scene(vbox, 600, 600);
         stage.setScene(scene);
-
 
         var textField = new TextField();
         textField.setPromptText("Введите никнейм");
