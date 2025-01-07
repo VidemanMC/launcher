@@ -43,7 +43,9 @@ public class Launcher extends Application {
         new MainScreen().show(stage);
 
         //temp
-        clientService.runClient();
+        new Thread(
+                () -> clientService.runClient()
+        ).start();
     }
 
     @Override

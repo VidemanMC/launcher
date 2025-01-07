@@ -1,7 +1,6 @@
 package ru.videmanmc.launcher.model.value.files;
 
 import ru.videmanmc.launcher.model.value.FileWithChecksum;
-import ru.videmanmc.launcher.model.value.files.ignored.IgnoredFiles;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@ package ru.videmanmc.launcher.model.entity;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.model.value.files.DownloadedFile;
+import ru.videmanmc.launcher.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.model.value.files.LocalFiles;
-import ru.videmanmc.launcher.model.value.files.ignored.IgnoredFiles;
 import ru.videmanmc.launcher.model.value.files.RemoteFiles;
 
 import java.util.List;
@@ -46,19 +46,7 @@ public class Client {
             case DOWNLOAD -> remoteChecksum.difference(localChecksum);
         };
 
-        var fileNames = difference.getFileNames();
-        excludeIgnoredFiles(fileNames);
-
-        return fileNames;
-    }
-
-    /**
-     * @param fileNames modified list
-     */
-    private void excludeIgnoredFiles(List<String> fileNames) {
-        if (localFiles.isFilesClean()) return;
-
-        fileNames.removeAll(ignoredFiles.excludedFiles());
+        return ignoredFiles.filter(difference.getFileNames());
     }
 
     public enum Filter {

@@ -7,9 +7,6 @@ import org.to2mbn.jmccc.mcdownloader.MinecraftDownloaderBuilder;
 import org.to2mbn.jmccc.mcdownloader.download.concurrent.CallbackAdapter;
 import org.to2mbn.jmccc.mcdownloader.provider.DownloadProviderChain;
 import org.to2mbn.jmccc.mcdownloader.provider.forge.ForgeDownloadProvider;
-import org.to2mbn.jmccc.mcdownloader.provider.forge.ForgeVersionList;
-import org.to2mbn.jmccc.mcdownloader.provider.liteloader.LiteloaderDownloadProvider;
-import org.to2mbn.jmccc.mcdownloader.provider.liteloader.LiteloaderVersionList;
 import org.to2mbn.jmccc.option.MinecraftDirectory;
 import org.to2mbn.jmccc.version.Version;
 import ru.videmanmc.launcher.model.entity.Client;
@@ -31,10 +28,10 @@ public class ClientService {
 
         client.run();
 
-        tempMinecraftRunningMethod();
+        tempMinecraftDownloadMethod();
     }
 
-    void tempMinecraftRunningMethod() {
+    void tempMinecraftDownloadMethod() {
         MinecraftDirectory dir = new MinecraftDirectory("C:\\Users\\Aleks\\.videmanmc\\client");
         ForgeDownloadProvider forgeProvider = new ForgeDownloadProvider();
         MinecraftDownloader downloader = MinecraftDownloaderBuilder.create()

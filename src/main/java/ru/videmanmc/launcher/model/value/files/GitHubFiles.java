@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.http.HttpClient;
 import ru.videmanmc.launcher.factory.FilesChecksumFactory;
-import ru.videmanmc.launcher.model.value.FilesChecksum;
-import ru.videmanmc.launcher.model.value.files.ignored.IgnoredFiles;
-import ru.videmanmc.launcher.model.value.SyncSettings;
+import ru.videmanmc.launcher.http.HttpClient;
 import ru.videmanmc.launcher.mapper.PathFormatMapper;
+import ru.videmanmc.launcher.model.value.FilesChecksum;
+import ru.videmanmc.launcher.model.value.SyncSettings;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -64,7 +63,12 @@ public class GitHubFiles implements RemoteFiles {
             return cachedChecksum;
         }
 
-        var downloadedHashesString = new String(httpClient.download(HASH).contents(), StandardCharsets.UTF_8);
+//        var downloadedHashesString = new String(httpClient.download(HASH).contents(), StandardCharsets.UTF_8);
+
+        var downloadedHashesString = """
+                client/resourcepacks/rupee_iron/assets/ironchest/textures/item/iron_gold_upgrade.png:3dac1fb5f1bf9cedf67724c07ce35ee2
+                client/resourcepacks/rupee_iron/assets/ironchest/textures/item/wood_iron_upgrade.png:acc9494450e4da0a9fdc1e0ff27bcabf
+                """;
         var nameHashPairs = Arrays.stream(downloadedHashesString.split("\n")).toList();
         setCachedChecksum(nameHashPairs);
 
@@ -75,7 +79,7 @@ public class GitHubFiles implements RemoteFiles {
     private void setCachedChecksum(List<String> nameHashPairs) {
         this.cachedRemoteFileNames = nameHashPairs.stream()
                 .map(str -> {
-                    int semicolonIndex = str.indexOf(':');
+                    int semicolonIndex = str.indexOf(PATH_HASH_SEPARATOR);
                     return str.substring(0, semicolonIndex);
                 })
                 .toList();
