@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 public record IgnoredFiles(List<String> filterRules) {
 
     public List<String> filter(List<String> nonFilteredFiles) {
-        return filterWildcardDir(filterDir(filterFile(nonFilteredFiles))); //todo убрать эту порнушку
+        return filterWildcardElements(filterDir(filterFile(nonFilteredFiles))); //todo убрать эту порнушку
     }
 
-    private List<String> filterWildcardDir(List<String> nonFilteredFiles) {
+    private List<String> filterWildcardElements(List<String> nonFilteredFiles) {
         return nonFilteredFiles.stream()
                 .filter(nonFilteredFile ->
 

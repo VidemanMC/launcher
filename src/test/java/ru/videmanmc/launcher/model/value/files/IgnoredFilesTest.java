@@ -55,23 +55,18 @@ public class IgnoredFilesTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"c*, config/a.txt", "b*, b.txt"})
+    @CsvSource({
+            "c*, config/a.txt",
+            "b*, b.txt"
+    })
     void filter_wildCardInRules_removesFitElements(String filterRule, String path) {
         //arrange
-        var nonFilteredNames = List.of(
-                path
-        );
-
-        var rules = List.of(
-                filterRule
-        );
-
+        var nonFilteredNames = List.of(path);
+        var rules = List.of(filterRule);
         var ignoredFiles = new IgnoredFiles(rules);
-
 
         //act
         var filteredNames = ignoredFiles.filter(nonFilteredNames);
-
 
         //assert
         assertFalse(filteredNames.contains(nonFilteredNames.getFirst()));

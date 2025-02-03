@@ -27,12 +27,23 @@ public class GitHubHttpClient implements ru.videmanmc.launcher.http.HttpClient {
     @Override
     @SneakyThrows
     public DownloadedFile download(String filePath) {
-        var request = httpBuilder.uri(new URI(
-                        DOWNLOAD_URL_TEMPLATE.replace("{path}", filePath)
-                ))
-                .build();
+        var uri = URI.create(
+                DOWNLOAD_URL_TEMPLATE.replace(
+                        "{path}",
+                        encodeUriPath(filePath)
+                )
+        );
+        var request = httpBuilder.uri(uri).build();
         var bytes = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray()).body();
 
-        return new DownloadedFile(bytes, pathFormatMapper.remoteToAbstractFormat(filePath));
+        var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
+
+        System.out.println("Downloaded " + abstractFilePath);
+
+        return new DownloadedFile(bytes, abstractFilePath);
+    }
+
+    private String encodeUriPath(String original) {
+        return original.replace(" ", "%20");
     }
 }

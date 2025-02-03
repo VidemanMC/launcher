@@ -8,7 +8,6 @@ import ru.videmanmc.launcher.configuration.di.General;
 import ru.videmanmc.launcher.dto.LauncherVersion;
 import ru.videmanmc.launcher.gui.component.MainScreen;
 import ru.videmanmc.launcher.repository.SettingsRepository;
-import ru.videmanmc.launcher.service.ClientService;
 
 import java.io.IOException;
 
@@ -16,7 +15,8 @@ public class Launcher extends Application {
 
     private SettingsRepository settingsRepository;
     private LauncherVersion launcherVersion;
-    private ClientService clientService;
+
+    private MainScreen mainScreen;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,7 +28,7 @@ public class Launcher extends Application {
 
         this.settingsRepository = di.getInstance(SettingsRepository.class);
         this.launcherVersion = di.getInstance(LauncherVersion.class);
-        this.clientService = di.getInstance(ClientService.class);
+        this.mainScreen = di.getInstance(MainScreen.class);
     }
 
     @Override
@@ -40,12 +40,7 @@ public class Launcher extends Application {
         ));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
-        new MainScreen().show(stage);
-
-        //temp
-        new Thread(
-                () -> clientService.runClient()
-        ).start();
+        mainScreen.show(stage);
     }
 
     @Override

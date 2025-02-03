@@ -78,9 +78,10 @@ tasks.named("processResources") {
     }
 }
 
-jar.enabled = false
 tasks.build.dependsOn(shadowJar)
-
+tasks.startScripts.mustRunAfter(shadowJar)
 tasks.named('test', Test) {
     useJUnitPlatform()
 }
+
+jar.enabled = false

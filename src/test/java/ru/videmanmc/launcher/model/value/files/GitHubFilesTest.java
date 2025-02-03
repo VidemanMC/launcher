@@ -1,20 +1,19 @@
 package ru.videmanmc.launcher.model.value.files;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.videmanmc.launcher.factory.FilesChecksumFactory;
 import ru.videmanmc.launcher.http.GitHubHttpClient;
 import ru.videmanmc.launcher.mapper.PathFormatMapper;
-import ru.videmanmc.launcher.factory.FilesChecksumFactory;
-import ru.videmanmc.launcher.repository.ClientRepositoryImp;
 import ru.videmanmc.launcher.service.hashing.Md5HashingService;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,15 +22,13 @@ public class GitHubFilesTest {
     @Mock
     private GitHubHttpClient httpClient;
 
-    @Mock(stubOnly = true)
-    private ClientRepositoryImp clientRepositoryImp;
-
     @BeforeEach
     void setUp() {
         var downloadedFile = new DownloadedFile("""
                 client/a:123
                 """.getBytes(StandardCharsets.UTF_8),
                 "hash.txt");
+
         when(httpClient.download("hash.txt")).thenReturn(downloadedFile);
     }
 
@@ -66,6 +63,6 @@ public class GitHubFilesTest {
     }
 
     private GitHubFiles createGitHubFiles() {
-        return new GitHubFiles(httpClient, new PathFormatMapper(), new FilesChecksumFactory(new Md5HashingService(), new PathFormatMapper()), new ObjectMapper());
+        return new GitHubFiles(httpClient, new PathFormatMapper(), new FilesChecksumFactory(new Md5HashingService(), new PathFormatMapper()));
     }
 }
