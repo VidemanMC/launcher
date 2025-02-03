@@ -8,6 +8,7 @@ plugins {
 
 application {
     mainClass = "ru.videmanmc.launcher.Launcher"
+    setApplicationDefaultJvmArgs(['-XX:+EnableDynamicAgentLoading'])
 }
 
 javafx {
@@ -27,18 +28,27 @@ repositories {
 ext {
     jmcccVer = '3.1.4'
     lombokVer = '1.18.30'
+    mockitoVer = '5.14.2'
 }
 
 dependencies {
     implementation "dev.3-3:jmccc:$jmcccVer"
     implementation "dev.3-3:jmccc-mcdownloader:$jmcccVer"
 
-
-    implementation 'io.github.amayaframework:amaya-di:2.2.0'
+    implementation 'com.google.inject:guice:7.0.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
 
     compileOnly "org.projectlombok:lombok:$lombokVer"
     annotationProcessor "org.projectlombok:lombok:$lombokVer"
+
+
+    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation "org.mockito:mockito-core:$mockitoVer"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVer"
+
 }
 
 idea {
@@ -48,7 +58,6 @@ idea {
 }
 
 shadowJar {
-
     archiveBaseName.set(rootProject.name)
     archiveVersion.set(version)
     archiveClassifier.set(null)
@@ -63,10 +72,16 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named("processResources") {
     filesMatching("info.properties") {
         expand([
-                version: version
+                version: version,
+                auth_token: System.getenv("auth_token")
         ])
     }
 }
 
-jar.enabled = false
 tasks.build.dependsOn(shadowJar)
+tasks.startScripts.mustRunAfter(shadowJar)
+tasks.named('test', Test) {
+    useJUnitPlatform()
+}
+
+jar.enabled = false

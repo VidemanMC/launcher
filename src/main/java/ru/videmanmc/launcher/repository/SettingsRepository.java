@@ -1,47 +1,46 @@
 package ru.videmanmc.launcher.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.videmanmc.launcher.dto.Settings;
+import ru.videmanmc.launcher.model.value.Settings;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@RequiredArgsConstructor
+@Getter
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SettingsRepository {
 
     private final ObjectMapper objectMapper;
 
     private final File file = new File(Settings.MAIN_DIRECTORY_PATH, Settings.LAUNCHER_CONFIG_FILE_NAME);
 
-    @Getter
     private Settings settings;
 
-    public void load() throws IOException {
-        if (settingsNotExists()) {
+    public Settings load() throws IOException {
+        if (Files.notExists(file.toPath())) {
             this.settings = new Settings();
-            return;
+            return this.settings;
         }
 
         this.settings = objectMapper.readValue(file, Settings.class);
+        return this.settings;
     }
 
     public void unload() throws IOException {
-        if (settingsNotExists()) {
-            createConfigDirectory();
-        }
+        createConfigDirectory();
 
         objectMapper.writeValue(file, settings);
     }
 
-    private boolean settingsNotExists() {
-        return !Files.exists(file.toPath());
-    }
-
     private void createConfigDirectory() throws IOException {
+        if (Files.exists(file.toPath().getParent())) {
+            return;
+        }
         Files.createDirectory(Path.of(Settings.MAIN_DIRECTORY_PATH));
     }
 }
