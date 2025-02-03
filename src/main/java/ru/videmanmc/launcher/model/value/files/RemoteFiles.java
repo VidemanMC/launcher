@@ -13,9 +13,4 @@ public interface RemoteFiles extends FileWithChecksum {
      * Downloads files by its name
      */
     List<DownloadedFile> download(List<String> fileNames);
-
-    /**
-     * Download list of ignored files
-     */
-    IgnoredFiles getIgnoredFiles();
 }

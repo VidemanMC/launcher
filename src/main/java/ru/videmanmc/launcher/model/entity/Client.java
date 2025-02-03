@@ -21,11 +21,6 @@ public class Client {
 
     private final IgnoredFiles ignoredFiles;
 
-
-    public void run() {
-        //
-    }
-
     /**
      * @return files needed to download
      */
