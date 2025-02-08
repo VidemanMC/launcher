@@ -17,9 +17,12 @@ public class GameRunningService {
 
     private final MinecraftCoreService minecraftCoreService;
 
-    public void run(String nickname) {
-        minecraftCoreService.download(syncSettings.minecraftVersion());
-        clientService.synchronizeClient();
+    public void run(String nickname, boolean inOnline) {
+        if (inOnline) {
+            minecraftCoreService.download(syncSettings.minecraftVersion());
+            clientService.synchronizeClient();
+        }
+
         minecraftCoreService.run(syncSettings.minecraftVersion(), nickname);
 
         System.exit(0);

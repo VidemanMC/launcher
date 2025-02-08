@@ -30,6 +30,9 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
 
     private String stripVanillaVersion(String minecraftVersion) {
         int index = minecraftVersion.indexOf('-');
+
+        if (index == -1) return minecraftVersion;
+
         return minecraftVersion.substring(0, index);
     }
 

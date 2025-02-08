@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -56,6 +57,9 @@ public class MainScreen implements LauncherScreen {
         mediaView.setPreserveRatio(false);
         mediaView.setVisible(false);
 
+        var checkbox = new CheckBox("Оффлайн-режим");
+        checkbox.setFont(Font.font(15));
+
         Button play = new Button("ИГРАТЬ");
         play.setFont(Font.font(20));
         play.setTextFill(Paint.valueOf("white"));
@@ -70,7 +74,7 @@ public class MainScreen implements LauncherScreen {
                 return;
             }
 
-            new Thread(() -> gameRunningService.run(textField.getText())).start();
+            new Thread(() -> gameRunningService.run(textField.getText(), !checkbox.isSelected())).start();
 
             player.setAutoPlay(true);
             mediaView.setVisible(true);
@@ -79,6 +83,7 @@ public class MainScreen implements LauncherScreen {
             vbox.getChildren().add(mediaView);
         });
 
+
         var reminder = new Text("Всё ещё впереди!");
         reminder.setFont(Font.font(16));
         reminder.setFill(Paint.valueOf("black"));
@@ -86,6 +91,7 @@ public class MainScreen implements LauncherScreen {
 
         vbox.getChildren().add(textField);
         vbox.getChildren().add(play);
+        vbox.getChildren().add(checkbox);
         vbox.getChildren().add(reminder);
         stage.show();
     }
