@@ -2,6 +2,7 @@ package ru.videmanmc.launcher.model.entity;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
+import ru.videmanmc.launcher.factory.RemotePathFactory;
 import ru.videmanmc.launcher.model.value.files.DownloadedFile;
 import ru.videmanmc.launcher.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.model.value.files.LocalFiles;
@@ -21,15 +22,16 @@ public class Client {
 
     private final IgnoredFiles ignoredFiles;
 
-    /**
-     * @return files needed to download
-     */
-    public List<DownloadedFile> prepareGameFiles() {
+    private final RemotePathFactory remotePathFactory;
+
+    public List<DownloadedFile> update() {
         var oldFiles = getFilteredFiles(Filter.DELETE);
         localFiles.delete(oldFiles);
 
         var changedFiles = getFilteredFiles(Filter.DOWNLOAD);
-        return remoteFiles.download(changedFiles);
+        return remoteFiles.download(
+                remotePathFactory.create(changedFiles, remoteFiles.listRemotePaths())
+        );
     }
 
     private List<String> getFilteredFiles(Filter filter) {
