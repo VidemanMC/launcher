@@ -16,8 +16,8 @@ public class ClientService {
     private final ClientRepository clientRepository;
 
     public void synchronizeClient() {
-        var clientPreparedFiles = client.prepareGameFiles();
-        clientPreparedFiles.forEach(clientRepository::saveToFile);
+        var updatedFiles = client.update();
+        updatedFiles.forEach(clientRepository::saveToFile);
     }
 
 }

@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.factory.FilesChecksumFactory;
 import ru.videmanmc.launcher.http.HttpClient;
-import ru.videmanmc.launcher.mapper.PathFormatMapper;
 import ru.videmanmc.launcher.model.value.FilesChecksum;
+import ru.videmanmc.launcher.model.value.RemotePath;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -14,28 +14,31 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class GitHubFiles implements RemoteFiles {
 
-    private final static String HASH = "hash.txt";
+    private final static String FILE_NAME_HASHES = "hash.txt";
+
     public final static String SYNC_SETTINGS = "sync-settings.yml";
 
     public final static String PATH_HASH_SEPARATOR = ":";
 
     private final HttpClient httpClient;
 
-    private final PathFormatMapper pathFormatMapper;
-
     private final FilesChecksumFactory filesChecksumFactory;
 
     private FilesChecksum cachedChecksum;
 
-    private List<String> cachedRemoteFileNames;
+    private List<String> cachedRemotePaths;
 
     @Override
-    public List<DownloadedFile> download(List<String> abstractFileNames) {
-        var mappedFileNames = pathFormatMapper.abstractToRemoteFormat(abstractFileNames, cachedRemoteFileNames);
-
-        return mappedFileNames.stream()
+    public List<DownloadedFile> download(List<RemotePath> remotePaths) {
+        return remotePaths.stream()
+                .map(RemotePath::path)
                 .map(httpClient::download)
                 .toList();
+    }
+
+    @Override
+    public List<String> listRemotePaths() {
+        return cachedRemotePaths;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class GitHubFiles implements RemoteFiles {
             return cachedChecksum;
         }
 
-        var downloadedHashesString = new String(httpClient.download(HASH).contents(), StandardCharsets.UTF_8);
+        var downloadedHashesString = new String(httpClient.download(FILE_NAME_HASHES).contents(), StandardCharsets.UTF_8);
         var nameHashPairs = Arrays.stream(downloadedHashesString.split("\n")).toList();
 
         setCachedChecksum(nameHashPairs);
@@ -54,7 +57,7 @@ public class GitHubFiles implements RemoteFiles {
     }
 
     private void setCachedChecksum(List<String> nameHashPairs) {
-        this.cachedRemoteFileNames = nameHashPairs.stream()
+        this.cachedRemotePaths = nameHashPairs.stream()
                 .map(str -> {
                     int semicolonIndex = str.indexOf(PATH_HASH_SEPARATOR);
                     return str.substring(0, semicolonIndex);

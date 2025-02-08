@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import ru.videmanmc.launcher.dto.BearerToken;
 import ru.videmanmc.launcher.dto.LauncherVersion;
 import ru.videmanmc.launcher.factory.FilesChecksumFactory;
+import ru.videmanmc.launcher.factory.RemotePathFactory;
 import ru.videmanmc.launcher.gui.component.MainScreen;
 import ru.videmanmc.launcher.http.GitHubHttpClient;
 import ru.videmanmc.launcher.mapper.PathFormatMapper;
@@ -57,6 +58,7 @@ public class General extends AbstractModule {
 
         bind(ClientService.class);
         bind(PathFormatMapper.class);
+        bind(RemotePathFactory.class);
         bind(HashingService.class).to(Md5HashingService.class);
         bind(MinecraftCoreService.class).to(JmcccMinecraftCoreService.class);
         bind(GameRunningService.class);

@@ -63,6 +63,6 @@ public class GitHubFilesTest {
     }
 
     private GitHubFiles createGitHubFiles() {
-        return new GitHubFiles(httpClient, new PathFormatMapper(), new FilesChecksumFactory(new Md5HashingService(), new PathFormatMapper()));
+        return new GitHubFiles(httpClient, new FilesChecksumFactory(new Md5HashingService(), new PathFormatMapper()));
     }
 }

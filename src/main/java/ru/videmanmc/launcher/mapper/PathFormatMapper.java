@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 public class PathFormatMapper {
 
+    private final String ABSTRACT_DIR_SEPARATOR = "/";
+
+    private final String WINDOWS_ESCAPED_DIR_SEPARATOR = "\\\\";
+
     public List<String> abstractToRemoteFormat(List<String> abstractFileNames, List<String> remoteFileNamesMask) {
         return remoteFileNamesMask.stream()
                 .filter(remoteFileName ->
@@ -23,7 +27,7 @@ public class PathFormatMapper {
 
     public List<String> localToAbstractFormat(List<String> localChecksumFileNames) {
         return localChecksumFileNames.stream()
-                .map(str -> str.replaceAll("\\\\", "/"))
+                .map(str -> str.replaceAll(WINDOWS_ESCAPED_DIR_SEPARATOR, ABSTRACT_DIR_SEPARATOR))
                 .map(str -> {
                     int clientIndex = str.indexOf(Settings.CLIENT_SUBDIRECTORY_PATH);
                     return str.substring(clientIndex + Settings.CLIENT_SUBDIRECTORY_PATH.length());
