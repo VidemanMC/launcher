@@ -1,0 +1,27 @@
+plugins {
+    id 'launcher.java-build'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "dev.3-3:jmccc:$jmcccVer"
+    implementation "dev.3-3:jmccc-mcdownloader:$jmcccVer"
+
+    implementation "com.google.inject:guice:$guiceVer"
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+
+
+    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation "org.mockito:mockito-core:$mockitoVer"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVer"
+}
+

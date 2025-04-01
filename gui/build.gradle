@@ -1,0 +1,34 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'launcher.java-build' //пока что, потом убрать так как будет clojure
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':core')
+
+    implementation "com.google.inject:guice:$guiceVer"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}
+
+application {
+    mainClass = "ru.videmanmc.launcher.gui.Launcher"
+    applicationDefaultJvmArgs = ['-XX:+EnableDynamicAgentLoading']
+}
+
+javafx {
+    version = "22.0.1"
+    modules = [ 'javafx.controls', 'javafx.media']
+}
+
+shadowJar {
+    archiveBaseName.set(rootProject.name)
+}
+
+tasks.compileJava.mustRunAfter(':core:shadowJar')
