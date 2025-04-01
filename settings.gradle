@@ -1,1 +1,3 @@
 rootProject.name = 'VidemanMC Launcher'
+
+include('core', 'gui', 'bootstrap')
