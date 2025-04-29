@@ -14,13 +14,15 @@ import org.to2mbn.jmccc.option.LaunchOption;
 import org.to2mbn.jmccc.option.MinecraftDirectory;
 import org.to2mbn.jmccc.version.Version;
 import ru.videmanmc.launcher.core.jmccc.forge.ForgeDownloadProviderWrapper;
-import ru.videmanmc.launcher.core.model.value.Settings;
+
+import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH;
+import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
 
 public class JmcccMinecraftCoreService implements MinecraftCoreService {
 
     @Override
     public void download(String minecraftVersion) {
-        var dir = new MinecraftDirectory(Settings.MAIN_DIRECTORY_PATH + Settings.CLIENT_SUBDIRECTORY_PATH);
+        var dir = new MinecraftDirectory(MAIN_DIRECTORY_PATH + CLIENT_SUBDIRECTORY_PATH);
 
         downloadVanilla(stripVanillaVersion(minecraftVersion), dir); // костыль, чтобы сркыть ошибку с отсутствием 1.20.1.json
         downloadForge(minecraftVersion, dir);
@@ -56,7 +58,7 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
     @SneakyThrows
     @Override
     public void run(String minecraftVersion, String nickname) {
-        var dir = new MinecraftDirectory(Settings.MAIN_DIRECTORY_PATH + Settings.CLIENT_SUBDIRECTORY_PATH);
+        var dir = new MinecraftDirectory(MAIN_DIRECTORY_PATH + CLIENT_SUBDIRECTORY_PATH);
         LauncherBuilder.buildDefault()
                 .launch(
                         new LaunchOption(
