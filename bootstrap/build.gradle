@@ -1,0 +1,22 @@
+plugins {
+    id 'application'
+    id 'launcher.java-build'
+}
+
+application {
+    mainClass = "ru.videmanmc.launcher.bootstrap.Bootstrap"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':constants')
+
+    implementation "io.github.amayaframework:amaya-di:$amayaDiVer"
+    implementation "io.github.amayaframework:amaya-di-reflect:$amayaDiReflectVer"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}

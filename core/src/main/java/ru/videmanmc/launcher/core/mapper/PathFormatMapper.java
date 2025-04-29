@@ -1,9 +1,9 @@
 package ru.videmanmc.launcher.core.mapper;
 
-import ru.videmanmc.launcher.core.model.value.Settings;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH;
 
 public class PathFormatMapper {
 
@@ -29,8 +29,8 @@ public class PathFormatMapper {
         return localChecksumFileNames.stream()
                 .map(str -> str.replaceAll(WINDOWS_ESCAPED_DIR_SEPARATOR, ABSTRACT_DIR_SEPARATOR))
                 .map(str -> {
-                    int clientIndex = str.indexOf(Settings.CLIENT_SUBDIRECTORY_PATH);
-                    return str.substring(clientIndex + Settings.CLIENT_SUBDIRECTORY_PATH.length());
+                    int clientIndex = str.indexOf(CLIENT_SUBDIRECTORY_PATH);
+                    return str.substring(clientIndex + CLIENT_SUBDIRECTORY_PATH.length());
                 })
                 .toList();
     }

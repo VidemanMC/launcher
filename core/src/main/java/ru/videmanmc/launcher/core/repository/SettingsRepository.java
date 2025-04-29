@@ -11,13 +11,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.LAUNCHER_CONFIG_FILE_NAME;
+import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
+
 @Getter
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SettingsRepository {
 
     private final ObjectMapper objectMapper;
 
-    private final File file = new File(Settings.MAIN_DIRECTORY_PATH, Settings.LAUNCHER_CONFIG_FILE_NAME);
+    private final File file = new File(MAIN_DIRECTORY_PATH, LAUNCHER_CONFIG_FILE_NAME);
 
     private Settings settings;
 
@@ -41,6 +44,6 @@ public class SettingsRepository {
         if (Files.exists(file.toPath().getParent())) {
             return;
         }
-        Files.createDirectory(Path.of(Settings.MAIN_DIRECTORY_PATH));
+        Files.createDirectory(Path.of(MAIN_DIRECTORY_PATH));
     }
 }
