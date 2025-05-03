@@ -1,12 +1,12 @@
-package ru.videmanmc.launcher.bootstrap;
+package ru.videmanmc.launcher.bootloader.secondary;
 
 import javax.swing.*;
 
-public class Bootstrap {
+public class BootloaderSecondary {
 
     public static void main(String[] args) {
 
-        var bootstrap = new Bootstrap();
+        var bootstrap = new BootloaderSecondary();
         bootstrap.show();
     }
 
