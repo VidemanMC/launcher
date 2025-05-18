@@ -6,11 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
-import ru.videmanmc.launcher.core.http.GitHubHttpClient;
 import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
-import ru.videmanmc.launcher.core.model.value.files.DownloadedFile;
 import ru.videmanmc.launcher.core.model.value.files.GitHubFiles;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
+import ru.videmanmc.launcher.http.client.GitHubHttpClient;
+import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.nio.charset.StandardCharsets;
 

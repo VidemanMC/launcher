@@ -1,0 +1,24 @@
+plugins {
+    id 'launcher.java-build'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compileOnly "com.google.inject:guice:$guiceVer"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+
+}
+
+tasks.withType(ProcessResources).configureEach {
+    filesMatching("credentials.properties") {
+        expand([
+                auth_token: System.getenv("auth_token")
+        ])
+    }
+}

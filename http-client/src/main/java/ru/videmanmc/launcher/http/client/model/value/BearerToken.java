@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.core.dto;
+package ru.videmanmc.launcher.http.client.model.value;
 
 public record BearerToken(String bearerToken) {
 

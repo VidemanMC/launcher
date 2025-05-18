@@ -2,6 +2,7 @@ package ru.videmanmc.launcher.core.model.value.files;
 
 import ru.videmanmc.launcher.core.model.value.FileWithChecksum;
 import ru.videmanmc.launcher.core.model.value.RemotePath;
+import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.util.List;
 

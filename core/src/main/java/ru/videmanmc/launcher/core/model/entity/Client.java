@@ -3,10 +3,10 @@ package ru.videmanmc.launcher.core.model.entity;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.core.factory.RemotePathFactory;
-import ru.videmanmc.launcher.core.model.value.files.DownloadedFile;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.core.model.value.files.LocalFiles;
 import ru.videmanmc.launcher.core.model.value.files.RemoteFiles;
+import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.util.List;
 

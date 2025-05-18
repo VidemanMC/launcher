@@ -34,15 +34,6 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = StandardCharsets.UTF_8
 }
 
-tasks.withType(ProcessResources).configureEach {
-    filesMatching("info.properties") {
-        expand([
-                version   : version,
-                auth_token: System.getenv("auth_token")
-        ])
-    }
-}
-
 tasks.build.dependsOn(shadowJar)
 tasks.withType(Test).configureEach {
     useJUnitPlatform()

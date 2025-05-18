@@ -1,4 +1,5 @@
 plugins {
+    id 'java-library'
     id 'launcher.java-build'
 }
 
@@ -7,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    api project(':http-client')
     implementation project(':constants')
 
     implementation "dev.3-3:jmccc:$jmcccVer"
