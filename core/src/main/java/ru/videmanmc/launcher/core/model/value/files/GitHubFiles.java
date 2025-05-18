@@ -3,9 +3,10 @@ package ru.videmanmc.launcher.core.model.value.files;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
-import ru.videmanmc.launcher.core.http.HttpClient;
 import ru.videmanmc.launcher.core.model.value.FilesChecksum;
 import ru.videmanmc.launcher.core.model.value.RemotePath;
+import ru.videmanmc.launcher.http.client.HttpClient;
+import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;

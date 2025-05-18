@@ -8,12 +8,14 @@ import ru.videmanmc.launcher.core.configuration.di.General;
 import ru.videmanmc.launcher.core.dto.LauncherVersion;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.gui.component.MainScreen;
+import ru.videmanmc.launcher.http.client.di.HttpDependencies;
 
 import java.io.IOException;
 
 public class Launcher extends Application { //todo rewrite it with clojure
 
     private SettingsRepository settingsRepository; //todo pass settings in a less coupled way
+
     private LauncherVersion launcherVersion;
 
     private MainScreen mainScreen;
@@ -24,7 +26,7 @@ public class Launcher extends Application { //todo rewrite it with clojure
 
     @Override
     public void init() {
-        var di = Guice.createInjector(new General());
+        var di = Guice.createInjector(new General(), new HttpDependencies());
 
         this.settingsRepository = di.getInstance(SettingsRepository.class);
         this.launcherVersion = di.getInstance(LauncherVersion.class);
@@ -35,9 +37,7 @@ public class Launcher extends Application { //todo rewrite it with clojure
     public void start(Stage stage) throws IOException {
         settingsRepository.load();
 
-        stage.setTitle("VidemanMC %s".formatted(
-                launcherVersion.version()
-        ));
+        stage.setTitle("VidemanMC " + launcherVersion.version());
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
         mainScreen.show(stage);

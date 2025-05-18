@@ -1,18 +1,18 @@
-package ru.videmanmc.launcher.core.http;
+package ru.videmanmc.launcher.http.client;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
-import ru.videmanmc.launcher.core.model.value.files.DownloadedFile;
+import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.function.Function;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class GitHubHttpClient implements ru.videmanmc.launcher.core.http.HttpClient {
+public class GitHubHttpClient implements ru.videmanmc.launcher.http.client.HttpClient {
 
     public static final String RAW_CONTENT_MIME = "application/vnd.github.raw+json";
 
@@ -22,11 +22,9 @@ public class GitHubHttpClient implements ru.videmanmc.launcher.core.http.HttpCli
 
     private final HttpRequest.Builder httpBuilder;
 
-    private final PathFormatMapper pathFormatMapper;
-
     @Override
     @SneakyThrows
-    public DownloadedFile download(String filePath) {
+    public DownloadedFile download(String filePath, Function<String, String> abstractPathFormatting) {
         var uri = URI.create(
                 DOWNLOAD_URL_TEMPLATE.replace(
                         "{path}",
@@ -36,9 +34,7 @@ public class GitHubHttpClient implements ru.videmanmc.launcher.core.http.HttpCli
         var request = httpBuilder.uri(uri).build();
         var bytes = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray()).body();
 
-        var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
-
-        System.out.println("Downloaded " + abstractFilePath);
+        var abstractFilePath = abstractPathFormatting.apply(filePath);
 
         return new DownloadedFile(bytes, abstractFilePath);
     }

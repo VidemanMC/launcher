@@ -3,8 +3,8 @@ package ru.videmanmc.launcher.core.repository;
 import com.google.inject.Inject;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.model.value.Settings;
-import ru.videmanmc.launcher.core.model.value.files.DownloadedFile;
 import ru.videmanmc.launcher.core.service.DirectoryInitService;
+import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.io.IOException;
 import java.nio.file.Files;

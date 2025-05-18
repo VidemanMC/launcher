@@ -32,3 +32,11 @@ shadowJar {
 }
 
 tasks.compileJava.mustRunAfter(':core:shadowJar')
+
+tasks.withType(ProcessResources).configureEach {
+    filesMatching("info.properties") {
+        expand([
+                version   : version
+        ])
+    }
+}

@@ -9,11 +9,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.core.dto.BearerToken;
 import ru.videmanmc.launcher.core.dto.LauncherVersion;
 import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
 import ru.videmanmc.launcher.core.factory.RemotePathFactory;
-import ru.videmanmc.launcher.core.http.GitHubHttpClient;
 import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
 import ru.videmanmc.launcher.core.model.entity.Client;
 import ru.videmanmc.launcher.core.model.value.Settings;
@@ -32,8 +30,6 @@ import ru.videmanmc.launcher.core.service.hashing.HashingService;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -58,8 +54,6 @@ public class General extends AbstractModule {
         bind(HashingService.class).to(Md5HashingService.class);
         bind(MinecraftCoreService.class).to(JmcccMinecraftCoreService.class);
         bind(GameRunningService.class);
-
-        bind(ru.videmanmc.launcher.core.http.HttpClient.class).to(GitHubHttpClient.class);
     }
 
     @Provides
@@ -77,27 +71,14 @@ public class General extends AbstractModule {
     }
 
     @Provides
-    BearerToken authToken(Properties properties) {
-        return new BearerToken(properties.getProperty("auth_token"));
-    }
-
-    @Provides
     @Singleton
     Properties properties() throws IOException {
         var props = new Properties();
         props.load(
-                getClass().getResourceAsStream("/info.properties") //todo
+                getClass().getResourceAsStream("/info.properties")
         );
 
         return props;
-    }
-
-    @Provides
-    HttpRequest.Builder httpRequestBuilder(BearerToken bearerToken) {
-        return HttpRequest.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .header("Accept", GitHubHttpClient.RAW_CONTENT_MIME)
-                .header("Authorization", bearerToken.bearerToken());
     }
 
     @Provides
@@ -107,8 +88,8 @@ public class General extends AbstractModule {
 
     @Provides
     @Singleton
-    SyncSettings syncSettings(ObjectMapper objectMapper, ru.videmanmc.launcher.core.http.HttpClient httpClient) throws JsonProcessingException {
-        var downloadedBytes = httpClient.download(GitHubFiles.SYNC_SETTINGS).contents();
+    SyncSettings syncSettings(ObjectMapper objectMapper, ru.videmanmc.launcher.http.client.HttpClient httpClient) throws JsonProcessingException {
+        var downloadedBytes = httpClient.download(GitHubFiles.SYNC_SETTINGS).contents(); //todo Exit method if offline mode is enabled
 
         return objectMapper.readValue(
                 new String(downloadedBytes, StandardCharsets.UTF_8),
