@@ -3,8 +3,9 @@ package ru.videmanmc.launcher.http.client.di;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import ru.videmanmc.launcher.http.client.ContentsClient;
 import ru.videmanmc.launcher.http.client.GitHubHttpClient;
-import ru.videmanmc.launcher.http.client.HttpClient;
+import ru.videmanmc.launcher.http.client.ReleasesClient;
 import ru.videmanmc.launcher.http.client.model.value.BearerToken;
 
 import java.io.IOException;
@@ -16,8 +17,12 @@ public class HttpDependencies extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(HttpClient.class)
-                .to(GitHubHttpClient.class);
+        bind(ContentsClient.class)
+                .to(GitHubHttpClient.class)
+                .in(Singleton.class);
+        bind(ReleasesClient.class)
+                .to(GitHubHttpClient.class)
+                .in(Singleton.class);
     }
 
     @Provides

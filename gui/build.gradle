@@ -10,6 +10,7 @@ repositories {
 
 dependencies {
     implementation project(':core')
+    implementation project(':http-client')
 
     implementation "com.google.inject:guice:$guiceVer"
 
@@ -30,8 +31,6 @@ javafx {
 shadowJar {
     archiveBaseName.set(rootProject.name)
 }
-
-tasks.compileJava.mustRunAfter(':core:shadowJar')
 
 tasks.withType(ProcessResources).configureEach {
     filesMatching("info.properties") {
