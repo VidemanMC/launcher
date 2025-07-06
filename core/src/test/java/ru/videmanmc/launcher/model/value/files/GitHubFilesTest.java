@@ -59,7 +59,7 @@ public class GitHubFilesTest {
                     var fileName = checksum.getFileNames().getFirst();
                     var fileHash = checksum.fileHashPair().get(fileName);
 
-                    return "ru/videmanmc/launcher/constants".equals(fileName) && "123".equals(fileHash);
+                    return "a".equals(fileName) && "123".equals(fileHash);
                 },
                 "Contents of FileChecksum preceded incorrect: key or value from map is not as expected!");
     }

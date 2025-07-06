@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
 import ru.videmanmc.launcher.core.model.value.FilesChecksum;
 import ru.videmanmc.launcher.core.model.value.RemotePath;
-import ru.videmanmc.launcher.http.client.HttpClient;
+import ru.videmanmc.launcher.http.client.ContentsClient;
 import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.nio.charset.StandardCharsets;
@@ -21,7 +21,7 @@ public class GitHubFiles implements RemoteFiles {
 
     public final static String PATH_HASH_SEPARATOR = ":";
 
-    private final HttpClient httpClient;
+    private final ContentsClient contentsClient;
 
     private final FilesChecksumFactory filesChecksumFactory;
 
@@ -33,7 +33,7 @@ public class GitHubFiles implements RemoteFiles {
     public List<DownloadedFile> download(List<RemotePath> remotePaths) {
         return remotePaths.stream()
                 .map(RemotePath::path)
-                .map(httpClient::download)
+                .map(contentsClient::download)
                 .toList();
     }
 
@@ -48,7 +48,7 @@ public class GitHubFiles implements RemoteFiles {
             return cachedChecksum;
         }
 
-        var downloadedHashesString = new String(httpClient.download(FILE_NAME_HASHES).contents(), StandardCharsets.UTF_8);
+        var downloadedHashesString = new String(contentsClient.download(FILE_NAME_HASHES).contents(), StandardCharsets.UTF_8);
         var nameHashPairs = Stream.of(downloadedHashesString.split("\n")).toList();
 
         setCachedChecksum(nameHashPairs);
