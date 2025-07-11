@@ -13,3 +13,5 @@ jobs:
         with:
           weeek_api_token: ${{ secrets.WEEEK_API_TOKEN }}
           workspace_id: ${{ secrets.WEEEK_WORKSPACE_ID }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
