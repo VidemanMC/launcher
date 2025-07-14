@@ -6,16 +6,6 @@ plugins {
     id "com.gradleup.shadow"
 }
 
-ext {
-    jmcccVer = '3.1.4'
-    lombokVer = '1.18.30'
-    mockitoVer = '5.14.2'
-    guiceVer = '7.0.0'
-
-    amayaDiVer = '2.3.1'
-    amayaDiReflectVer = '1.0.0'
-}
-
 idea {
     module {
         downloadJavadoc = true
@@ -36,16 +26,10 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = StandardCharsets.UTF_8
 }
 
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-}
-
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
 }
-
-tasks.withType(Tar).configureEach {it.enabled = false}
-tasks.withType(Zip).configureEach {it.enabled = false}
 
 

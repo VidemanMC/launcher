@@ -1,7 +1,8 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
-    id 'launcher.java-build' //пока что, потом убрать так как будет clojure
+    id 'launcher.java-build' //todo пока что, потом убрать так как будет clojure
+    id 'launcher.version-management'
 }
 
 repositories {
@@ -31,6 +32,9 @@ javafx {
 shadowJar {
     archiveBaseName.set(rootProject.name)
 }
+
+tasks.withType(Tar).configureEach {it.enabled = false}
+tasks.withType(Zip).configureEach {it.enabled = false}
 
 tasks.withType(ProcessResources).configureEach {
     filesMatching("info.properties") {
