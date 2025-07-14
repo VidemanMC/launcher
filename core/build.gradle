@@ -1,5 +1,6 @@
 plugins {
     id 'launcher.java-build'
+    id 'launcher.version-management'
 }
 
 repositories {
@@ -26,5 +27,9 @@ dependencies {
 
     testImplementation "org.mockito:mockito-core:$mockitoVer"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVer"
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
 

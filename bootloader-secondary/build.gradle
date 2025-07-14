@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'launcher.java-build'
+    id 'launcher.version-management'
 }
 
 application {

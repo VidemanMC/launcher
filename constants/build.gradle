@@ -1,3 +1,4 @@
 plugins {
     id 'launcher.java-build'
+    id 'java-library'
 }

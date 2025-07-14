@@ -3,6 +3,7 @@ package ru.videmanmc.launcher.model.value.files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.commons.util.Preconditions;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
@@ -14,12 +15,12 @@ import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GitHubFilesTest {
+public class GitHubFilesTest { // ERROR в классовых путях тестирования нет пути до COntentsClient
 
     @Mock
     private GitHubHttpClient httpClient;
@@ -55,13 +56,13 @@ public class GitHubFilesTest {
         var checksum = gitHubFiles.calculateChecksum();
 
         //assert
-        assertTrue(() -> {
-                    var fileName = checksum.getFileNames().getFirst();
-                    var fileHash = checksum.fileHashPair().get(fileName);
+        assertDoesNotThrow(() -> {
+            var fileName = checksum.getFileNames().getFirst();
+            var fileHash = checksum.fileHashPair().get(fileName);
 
-                    return "a".equals(fileName) && "123".equals(fileHash);
-                },
-                "Contents of FileChecksum preceded incorrect: key or value from map is not as expected!");
+            Preconditions.condition("a".equals(fileName), "name is not correct");
+            Preconditions.condition("123".equals(fileHash), "hash is not correct");
+        });
     }
 
     private GitHubFiles createGitHubFiles() {

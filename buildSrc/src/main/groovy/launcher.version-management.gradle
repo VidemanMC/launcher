@@ -1,0 +1,8 @@
+ext {
+    jmcccVer = '3.1.4'
+    lombokVer = '1.18.38'
+    mockitoVer = '5.14.2'
+    guiceVer = '7.0.0'
+    amayaDiVer = '2.3.1'
+    amayaDiReflectVer = '1.0.0'
+}
