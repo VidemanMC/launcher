@@ -1,13 +1,13 @@
 package ru.videmanmc.launcher.http.client;
 
-import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
 
 import java.util.function.Function;
 
 /**
- * Used for downloading specific files
+ * Used for downloading Minecraft client
  */
-public interface ContentsClient {
+public interface GameFilesClient {
 
     default DownloadedFile download(String url) {
         return download(url, s -> s);

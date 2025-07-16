@@ -3,10 +3,10 @@ package ru.videmanmc.launcher.http.client.di;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import ru.videmanmc.launcher.http.client.ContentsClient;
+import ru.videmanmc.launcher.http.client.AssetsClient;
+import ru.videmanmc.launcher.http.client.GameFilesClient;
 import ru.videmanmc.launcher.http.client.GitHubHttpClient;
-import ru.videmanmc.launcher.http.client.ReleasesClient;
-import ru.videmanmc.launcher.http.client.model.value.BearerToken;
+import ru.videmanmc.launcher.http.client.domain.value.BearerToken;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
@@ -17,10 +17,10 @@ public class HttpDependencies extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(ContentsClient.class)
+        bind(GameFilesClient.class)
                 .to(GitHubHttpClient.class)
                 .in(Singleton.class);
-        bind(ReleasesClient.class)
+        bind(AssetsClient.class)
                 .to(GitHubHttpClient.class)
                 .in(Singleton.class);
     }

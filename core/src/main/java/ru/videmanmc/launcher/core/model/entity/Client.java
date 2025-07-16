@@ -6,7 +6,7 @@ import ru.videmanmc.launcher.core.factory.RemotePathFactory;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.core.model.value.files.LocalFiles;
 import ru.videmanmc.launcher.core.model.value.files.RemoteFiles;
-import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
 
 import java.util.List;
 

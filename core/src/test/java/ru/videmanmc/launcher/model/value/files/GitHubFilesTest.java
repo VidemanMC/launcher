@@ -11,7 +11,7 @@ import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
 import ru.videmanmc.launcher.core.model.value.files.GitHubFiles;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
 import ru.videmanmc.launcher.http.client.GitHubHttpClient;
-import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GitHubFilesTest { // ERROR в классовых путях тестирования нет пути до COntentsClient
+public class GitHubFilesTest {
 
     @Mock
     private GitHubHttpClient httpClient;
