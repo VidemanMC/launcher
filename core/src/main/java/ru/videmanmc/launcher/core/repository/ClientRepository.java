@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.model.value.Settings;
 import ru.videmanmc.launcher.core.service.DirectoryInitService;
-import ru.videmanmc.launcher.http.client.model.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
 
 import java.io.IOException;
 import java.nio.file.Files;

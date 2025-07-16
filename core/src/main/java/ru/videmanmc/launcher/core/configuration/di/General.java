@@ -28,7 +28,7 @@ import ru.videmanmc.launcher.core.service.assets.JmcccMinecraftCoreService;
 import ru.videmanmc.launcher.core.service.assets.MinecraftCoreService;
 import ru.videmanmc.launcher.core.service.hashing.HashingService;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
-import ru.videmanmc.launcher.http.client.ContentsClient;
+import ru.videmanmc.launcher.http.client.GameFilesClient;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -89,8 +89,8 @@ public class General extends AbstractModule {
 
     @Provides
     @Singleton
-    SyncSettings syncSettings(ObjectMapper objectMapper, ContentsClient contentsClient) throws JsonProcessingException {
-        var downloadedBytes = contentsClient.download(GitHubFiles.SYNC_SETTINGS).contents(); //todo Exit method if offline mode is enabled
+    SyncSettings syncSettings(ObjectMapper objectMapper, GameFilesClient gameFilesClient) throws JsonProcessingException {
+        var downloadedBytes = gameFilesClient.download(GitHubFiles.SYNC_SETTINGS).contents(); //todo Exit method if offline mode is enabled
 
         return objectMapper.readValue(
                 new String(downloadedBytes, StandardCharsets.UTF_8),

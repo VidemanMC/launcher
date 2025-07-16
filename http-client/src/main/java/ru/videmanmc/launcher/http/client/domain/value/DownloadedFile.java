@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client.model.value;
+package ru.videmanmc.launcher.http.client.domain.value;
 
 /**
  * Represents file being downloaded.
