@@ -14,9 +14,9 @@ repositories {
 
 dependencies {
     implementation project(':constants')
+    implementation project(':http-client')
 
-    implementation "io.github.amayaframework:amaya-di:$amayaDiVer"
-    implementation "io.github.amayaframework:amaya-di-reflect:$amayaDiReflectVer"
+    compileOnly "org.jetbrains:annotations:$annotationsVer"
 
     compileOnly "org.projectlombok:lombok:$lombokVer"
     annotationProcessor "org.projectlombok:lombok:$lombokVer"

@@ -6,7 +6,7 @@ import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
 import ru.videmanmc.launcher.core.model.value.FilesChecksum;
 import ru.videmanmc.launcher.core.model.value.RemotePath;
 import ru.videmanmc.launcher.http.client.GameFilesClient;
-import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -30,7 +30,7 @@ public class GitHubFiles implements RemoteFiles {
     private List<String> cachedRemotePaths;
 
     @Override
-    public List<DownloadedFile> download(List<RemotePath> remotePaths) {
+    public List<GameFile> download(List<RemotePath> remotePaths) {
         return remotePaths.stream()
                 .map(RemotePath::path)
                 .map(gameFilesClient::download)
