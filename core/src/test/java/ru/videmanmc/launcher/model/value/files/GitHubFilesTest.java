@@ -11,7 +11,7 @@ import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
 import ru.videmanmc.launcher.core.model.value.files.GitHubFiles;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
 import ru.videmanmc.launcher.http.client.GitHubHttpClient;
-import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 
 import java.nio.charset.StandardCharsets;
 
@@ -27,7 +27,7 @@ public class GitHubFilesTest {
 
     @BeforeEach
     void setUp() {
-        var downloadedFile = new DownloadedFile("""
+        var downloadedFile = new GameFile("""
                 client/a:123
                 """.getBytes(StandardCharsets.UTF_8),
                 "hash.txt");

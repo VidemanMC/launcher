@@ -6,7 +6,7 @@ import ru.videmanmc.launcher.core.factory.RemotePathFactory;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.core.model.value.files.LocalFiles;
 import ru.videmanmc.launcher.core.model.value.files.RemoteFiles;
-import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class Client {
 
     private final RemotePathFactory remotePathFactory;
 
-    public List<DownloadedFile> update() {
+    public List<GameFile> update() {
         var oldFiles = getFilteredFiles(Filter.DELETE);
         localFiles.delete(oldFiles);
 

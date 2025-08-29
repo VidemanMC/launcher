@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.model.value.Settings;
 import ru.videmanmc.launcher.core.service.DirectoryInitService;
-import ru.videmanmc.launcher.http.client.domain.value.DownloadedFile;
+import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +22,9 @@ public class ClientRepository {
 
     @Inject
     public ClientRepository(Settings settings, DirectoryInitService directoryInitService) {
-        this.clientDirectory = settings.getGame().getDirectory().getAbsolutePath();
+        this.clientDirectory = settings.getGame()
+                .getDirectory()
+                .getAbsolutePath();
         this.directoryInitService = directoryInitService;
     }
 
@@ -56,11 +58,11 @@ public class ClientRepository {
     }
 
     @SneakyThrows
-    public void saveToFile(DownloadedFile downloadedFile) {
-        var absoluteFilePath = Path.of(clientDirectory, downloadedFile.filePath());
+    public void saveToFile(GameFile gameFile) {
+        var absoluteFilePath = Path.of(clientDirectory, gameFile.fullPath());
 
         directoryInitService.createParents(absoluteFilePath);
 
-        Files.write(absoluteFilePath, downloadedFile.contents());
+        Files.write(absoluteFilePath, gameFile.contents());
     }
 }

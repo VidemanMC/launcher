@@ -8,7 +8,7 @@ import ru.videmanmc.launcher.core.configuration.di.General;
 import ru.videmanmc.launcher.core.dto.LauncherVersion;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.gui.component.MainScreen;
-import ru.videmanmc.launcher.http.client.di.HttpDependencies;
+import ru.videmanmc.launcher.http.client.configuration.HttpGuiceConfiguration;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public class Launcher extends Application { //todo rewrite it with clojure
 
     @Override
     public void init() {
-        var di = Guice.createInjector(new General(), new HttpDependencies());
+        var di = Guice.createInjector(new General(), new HttpGuiceConfiguration());
 
         this.settingsRepository = di.getInstance(SettingsRepository.class);
         this.launcherVersion = di.getInstance(LauncherVersion.class);
