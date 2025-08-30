@@ -1,7 +1,7 @@
 package ru.videmanmc.launcher.bootloader.secondary.repository;
 
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.constants.WorkingDirectoryConstants;
+import org.jetbrains.annotations.Nullable;
 import ru.videmanmc.launcher.http.client.domain.entity.Binary;
 import ru.videmanmc.launcher.http.client.domain.value.Hash;
 
@@ -10,19 +10,36 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
+
 public class BinaryRepository {
 
-    private final Path CACHED_HASH = Path.of(WorkingDirectoryConstants.MAIN_DIRECTORY_PATH + "hash");
+    private final Path home;
+
+    public static final String HASH_FILE_NAME = "hash";
+
+    private final Path cachedHash;
+
+    public BinaryRepository(Path home) {
+        this.home = home;
+        this.cachedHash = home.resolve(HASH_FILE_NAME);
+    }
+
+    @SuppressWarnings("unused") // actually used by Guice
+    public BinaryRepository() {
+        this.home = Path.of(MAIN_DIRECTORY_PATH);
+        this.cachedHash = home.resolve(HASH_FILE_NAME);
+    }
 
     /**
      * Searches a binary with the prefix in the binary name.
      *
      * @param prefix prefix to search by
-     * @return found binary
+     * @return found binary, null otherwise
      */
+    @Nullable
     public Binary findByPrefix(String prefix) {
-        var homePath = Path.of(WorkingDirectoryConstants.MAIN_DIRECTORY_PATH);
-        try (Stream<Path> stream = Files.walk(homePath)) {
+        try (Stream<Path> stream = Files.walk(home, 1)) {
             return stream
                     .filter(Files::isRegularFile)
                     .map(Path::getFileName)
@@ -39,7 +56,7 @@ public class BinaryRepository {
 
     @SneakyThrows
     private Binary construct(String binaryName) {
-        var content = Files.readAllBytes(Path.of(WorkingDirectoryConstants.MAIN_DIRECTORY_PATH + binaryName));
+        var content = Files.readAllBytes(home.resolve(binaryName));
         var hash = readCachedHash();
 
         return new Binary(
@@ -51,8 +68,8 @@ public class BinaryRepository {
 
     @SneakyThrows
     private String readCachedHash() {
-        if (Files.exists(CACHED_HASH)) {
-            return Files.readString(CACHED_HASH);
+        if (Files.exists(cachedHash)) {
+            return Files.readString(cachedHash);
         }
 
         return "";
@@ -60,13 +77,14 @@ public class BinaryRepository {
 
     @SneakyThrows
     public void save(Binary binary) {
-        var path = Path.of(WorkingDirectoryConstants.MAIN_DIRECTORY_PATH + binary.name());
+        var path = home.resolve(binary.name());
         Files.write(path, binary.content());
-        cacheHash(binary.hash().hash());
+        cacheHash(binary.hash()
+                        .hash());
     }
 
     @SneakyThrows
     private void cacheHash(String hash) {
-        Files.write(CACHED_HASH, hash.getBytes());
+        Files.write(cachedHash, hash.getBytes());
     }
 }
