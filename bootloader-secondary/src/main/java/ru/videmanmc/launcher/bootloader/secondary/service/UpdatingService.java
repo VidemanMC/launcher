@@ -3,10 +3,11 @@ package ru.videmanmc.launcher.bootloader.secondary.service;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.bootloader.secondary.repository.BinaryRepository;
-import ru.videmanmc.launcher.constants.BinariesNamingConstants;
 import ru.videmanmc.launcher.http.client.BinaryClient;
 import ru.videmanmc.launcher.http.client.domain.entity.Binary;
 import ru.videmanmc.launcher.http.client.domain.value.BinaryInfo;
+
+import static ru.videmanmc.launcher.constants.BinariesNamingConstants.LAUNCHER_PREFIX;
 
 
 /**
@@ -25,8 +26,8 @@ public class UpdatingService {
      * @return neither updated nor current launcher file name
      */
     public String update() {
-        var binary = binaryRepository.findByPrefix(BinariesNamingConstants.LAUNCHER_PREFIX);
-        var remoteBinaryInfo = binaryClient.getInfoByPrefix(BinariesNamingConstants.LAUNCHER_PREFIX);
+        var binary = binaryRepository.findByPrefix(LAUNCHER_PREFIX);
+        var remoteBinaryInfo = binaryClient.getInfoByPrefix(LAUNCHER_PREFIX);
 
         if (binary == null) {
             return downloadRemoteBinary(remoteBinaryInfo);
