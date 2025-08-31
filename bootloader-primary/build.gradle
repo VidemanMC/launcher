@@ -1,8 +1,0 @@
-plugins {
-    id 'application'
-    id 'launcher.java-build'
-}
-
-application {
-    mainClass = "ru.videmanmc.launcher.bootloader.primary.BootloaderPrimary"
-}
