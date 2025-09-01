@@ -57,8 +57,11 @@ tasks.withType(Test).configureEach {
 javapackager {
     // common configuration
     mainClass = 'ru.videmanmc.launcher.bootloader.Bootloader'
-    organizationName = 'VidemanMC'
     name = rootProject.name
+
+
+    organizationName = 'VidemanMC'
+    organizationUrl = 'https://videmanmc.ru'
 
     generateInstaller = true
     bundleJre = false
@@ -84,7 +87,8 @@ tasks.register("linuxPackaging", PackageTask) {
     platform = linux
     createTarball = true
     linuxConfig {
-        generateAppImage = true
+        pngFile = file("${layout.projectDirectory}/assets/icon256.png")
+        categories = ['Game']
     }
 }
 
@@ -94,7 +98,7 @@ tasks.register("macPackaging", PackageTask) {
     platform = mac
     createTarball = true
     macConfig {
-
+        icnsFile = file("${layout.projectDirectory}/assets/icon.icns")
     }
 }
 
