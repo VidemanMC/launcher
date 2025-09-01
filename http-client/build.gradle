@@ -8,14 +8,12 @@ repositories {
 }
 
 dependencies {
-
-    implementation platform("com.fasterxml.jackson:jackson-bom:2.19.1")
-    implementation "com.fasterxml.jackson.core:jackson-databind"
-    implementation "com.google.inject:guice:$guiceVer"
+    compileOnly platform("com.fasterxml.jackson:jackson-bom:2.19.1")
+    compileOnly "com.fasterxml.jackson.core:jackson-databind"
+    compileOnly "com.google.inject:guice:$guiceVer"
 
     compileOnly "org.projectlombok:lombok:$lombokVer"
     annotationProcessor "org.projectlombok:lombok:$lombokVer"
-
 }
 
 tasks.withType(ProcessResources).configureEach {

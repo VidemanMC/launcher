@@ -1,8 +1,23 @@
+import io.github.fvarrui.javapackager.gradle.PackageTask
+
+import static io.github.fvarrui.javapackager.model.Platform.*
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.github.fvarrui:javapackager:1.7.6'
+    }
+}
+
 plugins {
     id 'application'
     id 'launcher.java-build'
     id 'launcher.version-management'
 }
+
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
 
 application {
     mainClass = "ru.videmanmc.launcher.bootloader.Bootloader"
@@ -15,6 +30,10 @@ repositories {
 dependencies {
     implementation project(':constants')
     implementation project(':http-client')
+
+    implementation platform("com.fasterxml.jackson:jackson-bom:2.19.1")
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.google.inject:guice:$guiceVer"
 
     compileOnly "org.jetbrains:annotations:$annotationsVer"
 
@@ -33,4 +52,52 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+javapackager {
+    // common configuration
+    mainClass = 'ru.videmanmc.launcher.bootloader.Bootloader'
+    organizationName = 'VidemanMC'
+    name = rootProject.name
+
+    generateInstaller = true
+    bundleJre = false
+}
+
+tasks.register("windowsPackaging", PackageTask) {
+    dependsOn(build)
+
+    platform = windows
+    winConfig {
+        fileVersion = version
+        icoFile = file("${layout.projectDirectory}/assets/icon256.ico")
+        generateMsi = false
+        setupMode = 'installForCurrentUser'
+        setupLanguages = [russian: "compiler:Languages/Russian.isl"]
+        removeOldLibs = true
+    }
+}
+
+tasks.register("linuxPackaging", PackageTask) {
+    dependsOn(build)
+
+    platform = linux
+    createTarball = true
+    linuxConfig {
+        generateAppImage = true
+    }
+}
+
+tasks.register("macPackaging", PackageTask) {
+    dependsOn(build)
+
+    platform = mac
+    createTarball = true
+    macConfig {
+
+    }
+}
+
+tasks.register("packagingAllPlatforms") {
+    dependsOn(['windowsPackaging', 'linuxPackaging', 'macPackaging'])
 }
