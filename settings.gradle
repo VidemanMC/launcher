@@ -1,4 +1,4 @@
-rootProject.name = 'VidemanMC Launcher'
+rootProject.name = 'videmanmc-launcher'
 
 include('core',
         'gui',
