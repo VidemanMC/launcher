@@ -58,7 +58,7 @@ javapackager {
     // common configuration
     mainClass = 'ru.videmanmc.launcher.bootloader.Bootloader'
     name = rootProject.name
-
+    displayName = 'VidemanMC Launcher'
 
     organizationName = 'VidemanMC'
     organizationUrl = 'https://videmanmc.ru'
