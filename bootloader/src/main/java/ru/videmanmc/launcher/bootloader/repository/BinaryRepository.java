@@ -10,8 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
-
 public class BinaryRepository {
 
     private final Path home;
@@ -27,7 +25,8 @@ public class BinaryRepository {
 
     @SuppressWarnings("unused") // actually used by Guice
     public BinaryRepository() {
-        this.home = Path.of(MAIN_DIRECTORY_PATH);
+//        this.home = Path.of(MAIN_DIRECTORY_PATH);
+        this.home = Path.of("C:/test");
         this.cachedHash = home.resolve(HASH_FILE_NAME);
     }
 
@@ -39,6 +38,10 @@ public class BinaryRepository {
      */
     @Nullable
     public Binary findByPrefix(String prefix) {
+        if (!Files.isReadable(home)) {
+            return null;
+        }
+
         try (Stream<Path> stream = Files.walk(home, 1)) {
             return stream
                     .filter(Files::isRegularFile)
@@ -77,8 +80,10 @@ public class BinaryRepository {
 
     @SneakyThrows
     public void save(Binary binary) {
+        Files.createDirectories(home);
         var path = home.resolve(binary.name());
         Files.write(path, binary.content());
+
         cacheHash(binary.hash()
                         .hash());
     }
