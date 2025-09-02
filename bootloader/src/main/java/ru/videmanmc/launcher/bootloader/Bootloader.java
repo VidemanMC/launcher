@@ -116,7 +116,13 @@ public class Bootloader {
     @SneakyThrows
     private void openWebpage(URI uri) {
         var desktop = Desktop.getDesktop();
-        desktop.browse(uri);
+
+        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+            desktop.browse(uri);
+        } else {
+            Runtime.getRuntime()
+                   .exec(new String[]{"xdg-open", uri.toString()});
+        }
     }
 
     /**
