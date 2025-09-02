@@ -86,8 +86,12 @@ tasks.register("linuxPackaging", PackageTask) {
 
     platform = linux
     createTarball = true
+
+    final def iconPath = 'assets/icon256.png'
+    extra relativeIconPath: iconPath
+
     linuxConfig {
-        pngFile = file("${layout.projectDirectory}/assets/icon256.png")
+        pngFile = file(iconPath)
         categories = ['Game']
     }
 }
