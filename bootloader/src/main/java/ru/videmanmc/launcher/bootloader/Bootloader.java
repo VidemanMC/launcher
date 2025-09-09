@@ -86,22 +86,22 @@ public class Bootloader {
 
             @Override
             public void mousePressed(MouseEvent e) {
-
+                // not used
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
+                // not used
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
+                // not used
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
+                // not used
             }
         });
         return openIssuesButton;
@@ -129,7 +129,6 @@ public class Bootloader {
      * Parent process can`t be stopped until it`s children processes work. This method is workaround.
      */
     void hide() {
-        frame.setVisible(false);
         System.exit(0);
     }
 
@@ -144,14 +143,13 @@ public class Bootloader {
         var progress = new JProgressBar();
         progress.setIndeterminate(true);
 
-        var frame = new JFrame("Обновление лаунчера...");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(450, 100);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
+        var localFrame = new JFrame("Обновление лаунчера...");
+        localFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        localFrame.setSize(450, 100);
+        localFrame.setLocationRelativeTo(null);
+        localFrame.setResizable(false);
+        localFrame.add(progress);
 
-        frame.add(progress);
-
-        return frame;
+        return localFrame;
     }
 }

@@ -105,7 +105,3 @@ tasks.register("macPackaging", PackageTask) {
         icnsFile = file("${layout.projectDirectory}/assets/icon.icns")
     }
 }
-
-tasks.register("packagingAllPlatforms") {
-    dependsOn(['windowsPackaging', 'linuxPackaging', 'macPackaging'])
-}
