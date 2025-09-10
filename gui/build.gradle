@@ -26,20 +26,23 @@ application {
 
 javafx {
     version = "22.0.1"
-    modules = [ 'javafx.controls', 'javafx.media']
+    modules = ['javafx.controls', 'javafx.media']
 }
 
 shadowJar {
     archiveBaseName.set(rootProject.name)
 }
 
-tasks.withType(Tar).configureEach {it.enabled = false}
-tasks.withType(Zip).configureEach {it.enabled = false}
+tasks.withType(Tar).configureEach { it.enabled = false }
+tasks.withType(Zip).configureEach { it.enabled = false }
 
 tasks.withType(ProcessResources).configureEach {
     filesMatching("info.properties") {
         expand([
-                version   : version
+                version: version
         ])
+    }
+    from('../assets/icons') {
+        include 'icon64.png'
     }
 }

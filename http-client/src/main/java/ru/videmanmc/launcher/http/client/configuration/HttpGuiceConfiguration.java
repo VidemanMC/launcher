@@ -33,11 +33,12 @@ public class HttpGuiceConfiguration extends AbstractModule {
     }
 
     @Provides
-    BearerToken authToken(Properties properties) {
+    BearerToken authToken(@AuthProperties Properties properties) {
         return new BearerToken(properties.getProperty("auth_token"));
     }
 
     @Provides
+    @AuthProperties
     @Singleton
     Properties properties() throws IOException {
         var props = new Properties();
