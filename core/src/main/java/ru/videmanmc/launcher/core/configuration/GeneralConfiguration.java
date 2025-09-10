@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.core.configuration.di;
+package ru.videmanmc.launcher.core.configuration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @SuppressWarnings("unused")
-public class General extends AbstractModule {
+public class GeneralConfiguration extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -67,11 +67,12 @@ public class General extends AbstractModule {
 
     @Provides
     @SneakyThrows
-    LauncherVersion launcherVersion(Properties properties) {
+    LauncherVersion launcherVersion(@InfoProperties Properties properties) {
         return new LauncherVersion(properties.getProperty("version"));
     }
 
     @Provides
+    @InfoProperties
     @Singleton
     Properties properties() throws IOException {
         var props = new Properties();

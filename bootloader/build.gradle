@@ -73,7 +73,7 @@ tasks.register("windowsPackaging", PackageTask) {
     platform = windows
     winConfig {
         fileVersion = version
-        icoFile = file("${layout.projectDirectory}/assets/icon256.ico")
+        icoFile = file("../assets/icons/icon256.ico")
         generateMsi = false
         setupMode = 'installForCurrentUser'
         setupLanguages = [russian: "compiler:Languages/Russian.isl"]
@@ -87,7 +87,7 @@ tasks.register("linuxPackaging", PackageTask) {
     platform = linux
     createTarball = true
 
-    final def iconPath = 'assets/icon256.png'
+    final def iconPath = '../assets/icons/icon256.png'
     extra relativeIconPath: iconPath
 
     linuxConfig {
@@ -102,6 +102,6 @@ tasks.register("macPackaging", PackageTask) {
     platform = mac
     createTarball = true
     macConfig {
-        icnsFile = file("${layout.projectDirectory}/assets/icon.icns")
+        icnsFile = file("../assets/icons/icon.icns")
     }
 }

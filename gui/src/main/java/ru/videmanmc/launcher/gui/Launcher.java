@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import ru.videmanmc.launcher.core.configuration.di.General;
+import ru.videmanmc.launcher.core.configuration.GeneralConfiguration;
 import ru.videmanmc.launcher.core.dto.LauncherVersion;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.gui.component.MainScreen;
@@ -26,7 +26,7 @@ public class Launcher extends Application { //todo rewrite it with clojure
 
     @Override
     public void init() {
-        var di = Guice.createInjector(new General(), new HttpGuiceConfiguration());
+        var di = Guice.createInjector(new GeneralConfiguration(), new HttpGuiceConfiguration());
 
         this.settingsRepository = di.getInstance(SettingsRepository.class);
         this.launcherVersion = di.getInstance(LauncherVersion.class);
@@ -38,7 +38,7 @@ public class Launcher extends Application { //todo rewrite it with clojure
         settingsRepository.load();
 
         stage.setTitle("VidemanMC " + launcherVersion.version());
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon64.png")));
 
         mainScreen.show(stage);
     }
