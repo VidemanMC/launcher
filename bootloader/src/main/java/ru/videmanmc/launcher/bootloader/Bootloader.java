@@ -132,6 +132,7 @@ public class Bootloader {
         System.exit(0);
     }
 
+    @SneakyThrows
     private JFrame buildGui() {
         Font font = new Font("Arial", Font.PLAIN, 18);
         UIManager.put("Label.font", font);
@@ -149,6 +150,10 @@ public class Bootloader {
         localFrame.setLocationRelativeTo(null);
         localFrame.setResizable(false);
         localFrame.add(progress);
+
+        var imageUrl = getClass().getClassLoader().getResource("icon64.png");
+        var icon = new ImageIcon(imageUrl);
+        localFrame.setIconImage(icon.getImage());
 
         return localFrame;
     }

@@ -105,3 +105,9 @@ tasks.register("macPackaging", PackageTask) {
         icnsFile = file("../assets/icons/icon.icns")
     }
 }
+
+processResources {
+    from('../assets/icons') {
+        include 'icon64.png'
+    }
+}
