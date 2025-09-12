@@ -85,7 +85,6 @@ tasks.register("linuxPackaging", PackageTask) {
     dependsOn(build)
 
     platform = linux
-    createTarball = true
 
     final def iconPath = '../assets/icons/icon256.png'
     extra relativeIconPath: iconPath
@@ -100,7 +99,6 @@ tasks.register("macPackaging", PackageTask) {
     dependsOn(build)
 
     platform = mac
-    createTarball = true
     macConfig {
         icnsFile = file("../assets/icons/icon.icns")
     }
