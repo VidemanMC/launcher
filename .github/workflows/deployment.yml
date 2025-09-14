@@ -10,9 +10,9 @@ jobs:
     name: Linux Bootloader
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      ARCH: x86_64
     steps:
-      - uses: actions/checkout@v4
-      
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -20,6 +20,8 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
+
+      - uses: actions/checkout@v4
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -152,9 +154,8 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: "./binaries/*"
+          files: "binaries/*"
           draft: false
           make_latest: true
           tag_name: v${{ steps.get_tag.outputs.TAG_NAME }}
-          token: ${{ github.token }}
           
