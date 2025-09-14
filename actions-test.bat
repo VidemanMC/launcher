@@ -1,0 +1,1 @@
+act -P windows-latest=-self-hosted --pull=false -j release --artifact-server-path /tmp/artifacts

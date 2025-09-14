@@ -1,5 +1,7 @@
 import io.github.fvarrui.javapackager.gradle.PackageTask
 
+import java.nio.file.Files
+
 import static io.github.fvarrui.javapackager.model.Platform.*
 
 buildscript {
@@ -82,13 +84,13 @@ tasks.register("windowsPackaging", PackageTask) {
 }
 
 tasks.register("linuxPackaging", PackageTask) {
-    dependsOn(build)
+    dependsOn tasks.prepareAppImageTool
 
     platform = linux
-    createTarball = true
 
-    final def iconPath = '../assets/icons/icon256.png'
-    extra relativeIconPath: iconPath
+    def iconName = 'icon256'
+    def iconPath = "../assets/icons/${iconName}.png"
+    extra relativeIconPath: iconPath, iconName: iconName
 
     linuxConfig {
         pngFile = file(iconPath)
@@ -96,11 +98,28 @@ tasks.register("linuxPackaging", PackageTask) {
     }
 }
 
+// JavaPackager trying to download appimagetool using broken link, i download one using correct link
+tasks.register('prepareAppImageTool') {
+    dependsOn(build)
+
+    def assets = file("build/assets").toPath()
+    new ProcessBuilder(['wget', '-O', 'appimagetool', 'https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage'])
+            .directory(projectDir)
+            .start()
+
+    doLast {
+        Files.createDirectories(assets)
+
+        def appImageToolPath = assets.resolve("appimagetool")
+        Files.move(file('appimagetool').toPath(), appImageToolPath)
+        appImageToolPath.toFile().setExecutable(true)
+    }
+}
+
 tasks.register("macPackaging", PackageTask) {
     dependsOn(build)
 
     platform = mac
-    createTarball = true
     macConfig {
         icnsFile = file("../assets/icons/icon.icns")
     }
