@@ -1,5 +1,7 @@
 package ru.videmanmc.launcher.core.service.assets;
 
+import com.google.inject.Inject;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.to2mbn.jmccc.auth.OfflineAuthenticator;
 import org.to2mbn.jmccc.launch.LauncherBuilder;
@@ -12,19 +14,27 @@ import org.to2mbn.jmccc.mcdownloader.download.tasks.DownloadTask;
 import org.to2mbn.jmccc.mcdownloader.provider.DownloadProviderChain;
 import org.to2mbn.jmccc.option.LaunchOption;
 import org.to2mbn.jmccc.option.MinecraftDirectory;
+import org.to2mbn.jmccc.option.ServerInfo;
 import org.to2mbn.jmccc.version.Version;
 import ru.videmanmc.launcher.core.jmccc.forge.ForgeDownloadProviderWrapper;
+import ru.videmanmc.launcher.core.model.value.Settings;
 
 import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH;
 import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
 
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class JmcccMinecraftCoreService implements MinecraftCoreService {
+
+    private final Settings settings;
 
     @Override
     public void download(String minecraftVersion) {
         var dir = new MinecraftDirectory(MAIN_DIRECTORY_PATH + CLIENT_SUBDIRECTORY_PATH);
 
-        downloadVanilla(stripVanillaVersion(minecraftVersion), dir); // костыль, чтобы сркыть ошибку с отсутствием 1.20.1.json
+        downloadVanilla(
+                stripVanillaVersion(minecraftVersion),
+                dir
+        ); // костыль, чтобы сркыть ошибку с отсутствием 1.20.1.json
         downloadForge(minecraftVersion, dir);
     }
 
@@ -39,19 +49,18 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
     @SneakyThrows
     private void downloadVanilla(String vanillaVersion, MinecraftDirectory dir) {
         var downloader = MinecraftDownloaderBuilder.buildDefault();
-        downloader.downloadIncrementally(dir, vanillaVersion, createCallback(downloader), CacheOption.CACHE).get();
+        downloader.downloadIncrementally(dir, vanillaVersion, createCallback(downloader), CacheOption.CACHE)
+                  .get();
     }
 
     @SneakyThrows
     private void downloadForge(String forgeVersion, MinecraftDirectory dir) {
         var downloader = MinecraftDownloaderBuilder.create()
-                .providerChain(DownloadProviderChain.create()
-                        .addProvider(
-                                new ForgeDownloadProviderWrapper()
-                        )
-                )
-                .build();
-        downloader.downloadIncrementally(dir, forgeVersion, createCallback(downloader), CacheOption.CACHE).get();
+                                                   .providerChain(DownloadProviderChain.create()
+                                                                                       .addProvider(new ForgeDownloadProviderWrapper()))
+                                                   .build();
+        downloader.downloadIncrementally(dir, forgeVersion, createCallback(downloader), CacheOption.CACHE)
+                  .get();
 
     }
 
@@ -59,14 +68,20 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
     @Override
     public void run(String minecraftVersion, String nickname) {
         var dir = new MinecraftDirectory(MAIN_DIRECTORY_PATH + CLIENT_SUBDIRECTORY_PATH);
+        var option = new LaunchOption(
+                minecraftVersion,
+                OfflineAuthenticator.name(nickname),
+                dir
+        );
+
+        int ram = settings.getGame()
+                          .getRamMegabytes();
+        option.setMinMemory(ram);
+        option.setMaxMemory(ram);
+        option.setServerInfo(new ServerInfo("mods.videmanmc.ru"));
+
         LauncherBuilder.buildDefault()
-                .launch(
-                        new LaunchOption(
-                                minecraftVersion,
-                                OfflineAuthenticator.name(nickname),
-                                dir
-                        )
-                );
+                       .launch(option);
     }
 
     private CallbackAdapter<Version> createCallback(MinecraftDownloader downloader) {
@@ -88,7 +103,7 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
 
                     @Override
                     public void updateProgress(long l, long l1) {
-                        System.out.println(l+"/"+l1);
+                        System.out.println(l + "/" + l1);
                     }
 
                     @Override
