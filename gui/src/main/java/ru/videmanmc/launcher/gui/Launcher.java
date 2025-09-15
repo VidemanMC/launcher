@@ -1,50 +1,68 @@
 package ru.videmanmc.launcher.gui;
 
 import com.google.inject.Guice;
-import javafx.application.Application;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
+import com.google.inject.Inject;
+import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.configuration.GeneralConfiguration;
-import ru.videmanmc.launcher.core.dto.LauncherVersion;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.gui.component.MainScreen;
+import ru.videmanmc.launcher.gui.configuration.UiGuiceConfiguration;
 import ru.videmanmc.launcher.http.client.configuration.HttpGuiceConfiguration;
 
-import java.io.IOException;
+import javax.swing.*;
+import java.awt.*;
 
-public class Launcher extends Application { //todo rewrite it with clojure
+public class Launcher { //todo rewrite it with clojure
 
-    private SettingsRepository settingsRepository; //todo pass settings in a less coupled way
+    private final SettingsRepository settingsRepository; //todo pass settings in a less coupled way
 
-    private LauncherVersion launcherVersion;
+    private final MainScreen mainScreen;
 
-    private MainScreen mainScreen;
+    private final JFrame frame;
+
+    @Inject
+    public Launcher(MainScreen screen, SettingsRepository settingsRepository) {
+        mainScreen = screen;
+        this.settingsRepository = settingsRepository;
+        frame = buildGui();
+    }
+
+    @SneakyThrows
+    private JFrame buildGui() {
+        Font font = new Font("Arial", Font.PLAIN, 18);
+        UIManager.put("Label.font", font);
+        UIManager.put("TextArea.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("Button.font", font);
+        UIManager.put("Dialog.font", font);
+
+        var localFrame = new JFrame();
+        var imageUrl = getClass().getClassLoader().getResource("icon64.png");
+        var icon = new ImageIcon(imageUrl);
+        localFrame.setIconImage(icon.getImage());
+
+        return localFrame;
+    }
 
     public static void main(String[] args) {
-        launch(args);
+        var injector = Guice.createInjector(
+                new HttpGuiceConfiguration(),
+                new GeneralConfiguration(),
+                new UiGuiceConfiguration()
+        );
+
+        var launcher = injector.getInstance(Launcher.class);
+        launcher.start();
+        launcher.stop();
     }
 
-    @Override
-    public void init() {
-        var di = Guice.createInjector(new GeneralConfiguration(), new HttpGuiceConfiguration());
-
-        this.settingsRepository = di.getInstance(SettingsRepository.class);
-        this.launcherVersion = di.getInstance(LauncherVersion.class);
-        this.mainScreen = di.getInstance(MainScreen.class);
-    }
-
-    @Override
-    public void start(Stage stage) {
+    public void start() {
         settingsRepository.getOrLoad();
-
-        stage.setTitle("VidemanMC " + launcherVersion.version());
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon64.png")));
-
-        mainScreen.show(stage);
+        mainScreen.show(frame);
     }
 
-    @Override
-    public void stop() throws IOException {
+    @SneakyThrows
+    public void stop() {
         settingsRepository.unload();
     }
 }

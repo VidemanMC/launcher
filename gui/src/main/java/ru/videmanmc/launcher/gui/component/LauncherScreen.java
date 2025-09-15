@@ -1,8 +1,8 @@
 package ru.videmanmc.launcher.gui.component;
 
-import javafx.stage.Stage;
+import javax.swing.*;
 
 public interface LauncherScreen {
 
-    void show(Stage stage);
+    void show(JFrame frame);
 }
