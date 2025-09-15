@@ -1,6 +1,5 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'launcher.java-build' //todo пока что, потом убрать так как будет clojure
     id 'launcher.version-management'
 }
@@ -24,11 +23,6 @@ application {
     applicationDefaultJvmArgs = ['-XX:+EnableDynamicAgentLoading']
 }
 
-javafx {
-    version = "22.0.1"
-    modules = ['javafx.controls', 'javafx.media']
-}
-
 shadowJar {
     archiveBaseName.set("launcher")
 }
@@ -37,9 +31,7 @@ tasks.withType(Tar).configureEach { it.enabled = false }
 
 tasks.withType(ProcessResources).configureEach {
     filesMatching("info.properties") {
-        expand([
-                version: version
-        ])
+        expand(version: version)
     }
     from('../assets/icons') {
         include 'icon64.png'
