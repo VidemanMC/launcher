@@ -8,9 +8,6 @@ import java.io.File;
 import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH;
 import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
 
-/**
- * Settings that contains option for launcher and Minecraft.
- */
 @Getter
 @Setter
 public class Settings {
@@ -24,10 +21,19 @@ public class Settings {
     @Setter
     public static final class GameSettings {
 
+        /**
+         * Whether to automatically join to server?
+         */
         private boolean autoJoin;
 
+        /**
+         * Client`s home dir
+         */
         private File directory = new File(MAIN_DIRECTORY_PATH, CLIENT_SUBDIRECTORY_PATH);
 
+        /**
+         * Available RAM for running Minecraft.
+         */
         private int ramMegabytes = 2;
 
     }
@@ -36,6 +42,10 @@ public class Settings {
     @Setter
     public static final class LauncherSettings {
 
+        /**
+         * Whether to execute in offline mode? <br>
+         * In this mode, launcher will not check updates.
+         */
         private boolean offline;
     }
 
