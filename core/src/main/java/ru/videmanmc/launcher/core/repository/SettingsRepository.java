@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.model.value.Settings;
 
 import java.io.File;
@@ -24,14 +25,27 @@ public class SettingsRepository {
 
     private Settings settings;
 
-    public Settings load() throws IOException {
-        if (Files.notExists(file.toPath())) {
-            this.settings = new Settings();
-            return this.settings;
+    /**
+     * @return new or singleton {@link Settings}
+     */
+    @SneakyThrows
+    public Settings getOrLoad() {
+        if (settings != null) {
+            return settings;
         }
 
-        this.settings = objectMapper.readValue(file, Settings.class);
-        return this.settings;
+        return load();
+    }
+
+    @SneakyThrows
+    public Settings load() {
+        if (Files.notExists(file.toPath())) {
+            settings = new Settings();
+            return settings;
+        }
+
+        settings = objectMapper.readValue(file, Settings.class);
+        return settings;
     }
 
     public void unload() throws IOException {

@@ -20,10 +20,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import ru.videmanmc.launcher.core.model.value.Settings;
 import ru.videmanmc.launcher.core.service.GameRunningService;
 
 @RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class MainScreen implements LauncherScreen {
+
+    private final Settings settings;
 
     private final GameRunningService gameRunningService; //todo add event system and remove this shit from there
 
@@ -38,6 +41,7 @@ public class MainScreen implements LauncherScreen {
         stage.setScene(scene);
 
         var textField = new TextField();
+        textField.setText(getCachedLogin());
         textField.setPromptText("Введите никнейм");
         textField.setFocusTraversable(false);
         textField.setFont(Font.font(20));
@@ -81,6 +85,8 @@ public class MainScreen implements LauncherScreen {
 
             vbox.getChildren().clear();
             vbox.getChildren().add(mediaView);
+
+            cacheLogin(textField.getText());
         });
 
 
@@ -94,5 +100,13 @@ public class MainScreen implements LauncherScreen {
         vbox.getChildren().add(checkbox);
         vbox.getChildren().add(reminder);
         stage.show();
+    }
+
+    private void cacheLogin(String login) {
+        settings.getGame().setLogin(login);
+    }
+
+    private String getCachedLogin() {
+        return settings.getGame().getLogin();
     }
 }

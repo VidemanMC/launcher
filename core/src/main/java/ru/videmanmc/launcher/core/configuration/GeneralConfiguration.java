@@ -46,7 +46,8 @@ public class GeneralConfiguration extends AbstractModule {
                 .to(GitHubFiles.class)
                 .in(Singleton.class);
 
-        bind(SettingsRepository.class);
+        bind(SettingsRepository.class)
+                .in(Singleton.class);
         bind(ClientRepository.class);
 
         bind(ClientService.class);
@@ -60,9 +61,9 @@ public class GeneralConfiguration extends AbstractModule {
     @Provides
     ObjectMapper objectMapper() {
         return YAMLMapper.builder()
-                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
-                .propertyNamingStrategy(PropertyNamingStrategies.KebabCaseStrategy.INSTANCE)
-                .build();
+                         .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                         .propertyNamingStrategy(PropertyNamingStrategies.KebabCaseStrategy.INSTANCE)
+                         .build();
     }
 
     @Provides
@@ -91,7 +92,8 @@ public class GeneralConfiguration extends AbstractModule {
     @Provides
     @Singleton
     SyncSettings syncSettings(ObjectMapper objectMapper, GameFilesClient gameFilesClient) throws JsonProcessingException {
-        var downloadedBytes = gameFilesClient.download(GitHubFiles.SYNC_SETTINGS).contents(); //todo Exit method if offline mode is enabled
+        var downloadedBytes = gameFilesClient.download(GitHubFiles.SYNC_SETTINGS)
+                                             .contents(); //todo Exit method if offline mode is enabled
 
         return objectMapper.readValue(
                 new String(downloadedBytes, StandardCharsets.UTF_8),
@@ -100,10 +102,8 @@ public class GeneralConfiguration extends AbstractModule {
     }
 
     @Provides
-    @Singleton
-    @SneakyThrows
     Settings settings(SettingsRepository settingsRepository) {
-        return settingsRepository.load();
+        return settingsRepository.getOrLoad();
     }
 
 }
