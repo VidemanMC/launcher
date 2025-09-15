@@ -108,9 +108,17 @@ public class Bootloader {
     }
 
     private String createUserErrorMessage(Exception exception) {
-        return Arrays.stream(exception.getStackTrace())
-                     .map(StackTraceElement::toString)
-                     .collect(Collectors.joining("\n"));
+        var stacktrace = Arrays.stream(exception.getStackTrace())
+                               .map(StackTraceElement::toString)
+                               .collect(Collectors.joining("\n"));
+        return """
+                Message: %s
+                Stacktrace: %s
+                """
+                .formatted(
+                        exception.getMessage(),
+                        stacktrace
+                );
     }
 
     @SneakyThrows
