@@ -34,8 +34,8 @@ public class Launcher extends Application { //todo rewrite it with clojure
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        settingsRepository.load();
+    public void start(Stage stage) {
+        settingsRepository.getOrLoad();
 
         stage.setTitle("VidemanMC " + launcherVersion.version());
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon64.png")));

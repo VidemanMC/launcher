@@ -32,9 +32,14 @@ public class Settings {
         private File directory = new File(MAIN_DIRECTORY_PATH, CLIENT_SUBDIRECTORY_PATH);
 
         /**
-         * Available RAM for running Minecraft.
+         * Available RAM for running Minecraft
          */
         private int ramMegabytes = 2;
+
+        /**
+         * User login
+         */
+        private String login;
 
     }
 
