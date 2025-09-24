@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.http.client.domain.entity.Binary;
 import ru.videmanmc.launcher.http.client.domain.value.BinaryInfo;
+import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
 import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 import ru.videmanmc.launcher.http.client.domain.value.Hash;
 
@@ -16,10 +17,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
-import java.util.function.UnaryOperator;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class GitHubHttpClient implements GameFilesClient, BinaryClient {
+public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteChecksumCalculator {
 
     public static final String RAW_CONTENT_MIME = "application/vnd.github.raw+json";
 
@@ -31,6 +34,11 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient {
 
     private static final String LATEST_RELEASES_URI = LAUNCHER_BASE_URL + "/releases/latest";
 
+    private static final String FILE_NAME_HASHES = "hash.txt";
+
+    public static final String SYNC_SETTINGS = "sync-settings.yml";
+
+    public static final String PATH_HASH_SEPARATOR = ":";
 
     private final HttpClient httpClient = HttpClient.newBuilder()
                                                     .followRedirects(HttpClient.Redirect.ALWAYS)
@@ -40,18 +48,13 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient {
 
     private final HttpRequest.Builder httpBuilder;
 
-    /*
-    todo КАКОГО ХРЕНА?
+    private final PathFormatMapper pathFormatMapper;
 
-        Почему внешняя система заадёт форму моего интерфейса?
-    Почему метод download яано декларирует: я скачива файлы И преобразую пути. Потребность в преобразовании путей возникла из-за гитхаба, а не ВООБЩЕ.
-
-        Поэтому интерфейс метода нужно упростить: убрать abstractPathFormatting, see https://github.com/VidemanMC/launcher/issues/11
-     */
+    private final FilesChecksumFactory filesChecksumFactory;
 
     @Override
     @SneakyThrows
-    public GameFile download(String filePath, UnaryOperator<String> abstractPathFormatting) {
+    public GameFile download(String filePath) {
         var uri = URI.create(
                 DOWNLOAD_URI_TEMPLATE.replace(
                         "{path}",
@@ -65,7 +68,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient {
                                       HttpResponse.BodyHandlers.ofByteArray()
                               )
                               .body();
-        var abstractFilePath = abstractPathFormatting.apply(filePath);
+        var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
 
         return new GameFile(bytes, abstractFilePath);
     }
@@ -134,5 +137,58 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient {
     private String trim(String hash) {
         var githubAlgNamePrefixIndex = 7;
         return hash.substring(githubAlgNamePrefixIndex);
+    }
+
+    @Override
+    public List<String> getFilePaths() {
+        return getCachedFilePaths();
+    }
+
+    private List<String> cachedFilePaths;
+
+    private List<String> getCachedFilePaths() {
+        if (cachedFilePaths == null) {
+            cachedFilePaths = getCachedNameHashPairs().stream()
+                                                      .map(this::extractNamePart)
+                                                      .toList();
+        }
+
+        return cachedFilePaths;
+    }
+
+    private String extractNamePart(String nameHashPair) {
+        int semicolonIndex = nameHashPair.indexOf(PATH_HASH_SEPARATOR);
+        return nameHashPair.substring(0, semicolonIndex);
+    }
+
+    private FilesChecksum cachedChecksum;
+
+    @Override
+    public FilesChecksum calculateChecksum() {
+        if (cachedChecksum != null) {
+            return cachedChecksum;
+        }
+        this.cachedChecksum = filesChecksumFactory.ofRemote(getCachedNameHashPairs());
+
+        return this.cachedChecksum;
+    }
+
+    private List<String> cachedHashNamePairs;
+
+    private List<String> getCachedNameHashPairs() {
+        if (cachedHashNamePairs == null) {
+            cachedHashNamePairs = downloadNameHashPairs();
+        }
+
+        return cachedHashNamePairs;
+    }
+
+    private List<String> downloadNameHashPairs() {
+        var downloadedHashesString = new String(
+                download(FILE_NAME_HASHES)
+                        .contents(), StandardCharsets.UTF_8
+        );
+        return Stream.of(downloadedHashesString.split("\n"))
+                     .toList();
     }
 }

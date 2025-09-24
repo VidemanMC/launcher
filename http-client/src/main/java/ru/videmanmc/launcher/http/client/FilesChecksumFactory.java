@@ -1,11 +1,8 @@
-package ru.videmanmc.launcher.core.factory;
+package ru.videmanmc.launcher.http.client;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
-import ru.videmanmc.launcher.core.model.value.FilesChecksum;
-import ru.videmanmc.launcher.core.model.value.files.GitHubFiles;
-import ru.videmanmc.launcher.core.service.hashing.HashingService;
+import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,7 +52,7 @@ public class FilesChecksumFactory {
      */
     public FilesChecksum ofRemote(List<String> fileHashPairString) {
         var nameHashMap = fileHashPairString.stream()
-                .map(s -> s.split(GitHubFiles.PATH_HASH_SEPARATOR))
+                .map(s -> s.split(GitHubHttpClient.PATH_HASH_SEPARATOR))
                 .collect(
                         Collectors.toMap(
                                 nameHashArray -> pathFormatMapper.remoteToAbstractFormat(nameHashArray[0]),

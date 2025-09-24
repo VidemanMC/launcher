@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class IgnoredFilesTest {
+class IgnoredFilesTest {
 
     @Test
     void filter_fileNameInRules_removesFileName() {

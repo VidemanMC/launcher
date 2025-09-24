@@ -1,14 +1,14 @@
 package ru.videmanmc.launcher.model.value;
 
 import org.junit.jupiter.api.Test;
-import ru.videmanmc.launcher.core.model.value.FilesChecksum;
+import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FilesChecksumTest {
+class FilesChecksumTest {
 
     @Test
     void difference_sameKeysDifferentValues_returnsAllElements() {

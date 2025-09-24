@@ -8,6 +8,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':constants')
+
     compileOnly platform("com.fasterxml.jackson:jackson-bom:2.19.1")
     compileOnly "com.fasterxml.jackson.core:jackson-databind"
     compileOnly "com.google.inject:guice:$guiceVer"

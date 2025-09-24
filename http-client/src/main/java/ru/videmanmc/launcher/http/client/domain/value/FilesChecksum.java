@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.core.model.value;
+package ru.videmanmc.launcher.http.client.domain.value;
 
 import java.util.ArrayList;
 import java.util.List;

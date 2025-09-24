@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.core.service.hashing;
+package ru.videmanmc.launcher.http.client;
 
 public interface HashingService {
 
