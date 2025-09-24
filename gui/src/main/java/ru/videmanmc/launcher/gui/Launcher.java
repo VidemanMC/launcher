@@ -27,6 +27,18 @@ public class Launcher { //todo rewrite it with clojure
         frame = buildGui();
     }
 
+    public static void main(String[] args) {
+        var injector = Guice.createInjector(
+                new HttpGuiceConfiguration(),
+                new GeneralConfiguration(),
+                new UiGuiceConfiguration()
+        );
+
+        var launcher = injector.getInstance(Launcher.class);
+        launcher.start();
+        launcher.stop();
+    }
+
     @SneakyThrows
     private JFrame buildGui() {
         Font font = new Font("Arial", Font.PLAIN, 18);
@@ -42,18 +54,6 @@ public class Launcher { //todo rewrite it with clojure
         localFrame.setIconImage(icon.getImage());
 
         return localFrame;
-    }
-
-    public static void main(String[] args) {
-        var injector = Guice.createInjector(
-                new HttpGuiceConfiguration(),
-                new GeneralConfiguration(),
-                new UiGuiceConfiguration()
-        );
-
-        var launcher = injector.getInstance(Launcher.class);
-        launcher.start();
-        launcher.stop();
     }
 
     public void start() {

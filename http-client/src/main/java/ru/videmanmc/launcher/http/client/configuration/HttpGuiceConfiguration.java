@@ -9,6 +9,7 @@ import ru.videmanmc.launcher.http.client.GitHubHttpClient;
 import ru.videmanmc.launcher.http.client.domain.value.BearerToken;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.util.Properties;
 
@@ -27,7 +28,7 @@ public class HttpGuiceConfiguration extends AbstractModule {
     @Provides
     HttpRequest.Builder authorizedHttpRequestBuilder(BearerToken bearerToken) {
         return HttpRequest.newBuilder()
-                .version(java.net.http.HttpClient.Version.HTTP_2)
+                .version(HttpClient.Version.HTTP_1_1)
                 .header("Accept", GitHubHttpClient.RAW_CONTENT_MIME)
                 .header("Authorization", bearerToken.bearerToken());
     }

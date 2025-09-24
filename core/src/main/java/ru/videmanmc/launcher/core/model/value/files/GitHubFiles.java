@@ -15,11 +15,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class GitHubFiles implements RemoteFiles {
 
-    private final static String FILE_NAME_HASHES = "hash.txt";
+    private static final String FILE_NAME_HASHES = "hash.txt";
 
-    public final static String SYNC_SETTINGS = "sync-settings.yml";
+    public static final String SYNC_SETTINGS = "sync-settings.yml";
 
-    public final static String PATH_HASH_SEPARATOR = ":";
+    public static final String PATH_HASH_SEPARATOR = ":";
 
     private final GameFilesClient gameFilesClient;
 
@@ -32,9 +32,9 @@ public class GitHubFiles implements RemoteFiles {
     @Override
     public List<GameFile> download(List<RemotePath> remotePaths) {
         return remotePaths.stream()
-                .map(RemotePath::path)
-                .map(gameFilesClient::download)
-                .toList();
+                          .map(RemotePath::path)
+                          .map(gameFilesClient::download)
+                          .toList();
     }
 
     @Override
@@ -48,8 +48,12 @@ public class GitHubFiles implements RemoteFiles {
             return cachedChecksum;
         }
 
-        var downloadedHashesString = new String(gameFilesClient.download(FILE_NAME_HASHES).contents(), StandardCharsets.UTF_8);
-        var nameHashPairs = Stream.of(downloadedHashesString.split("\n")).toList();
+        var downloadedHashesString = new String(
+                gameFilesClient.download(FILE_NAME_HASHES)
+                               .contents(), StandardCharsets.UTF_8
+        );
+        var nameHashPairs = Stream.of(downloadedHashesString.split("\n"))
+                                  .toList();
 
         setCachedChecksum(nameHashPairs);
         this.cachedChecksum = filesChecksumFactory.ofRemote(nameHashPairs);
@@ -59,10 +63,10 @@ public class GitHubFiles implements RemoteFiles {
 
     private void setCachedChecksum(List<String> nameHashPairs) {
         this.cachedRemotePaths = nameHashPairs.stream()
-                .map(str -> {
-                    int semicolonIndex = str.indexOf(PATH_HASH_SEPARATOR);
-                    return str.substring(0, semicolonIndex);
-                })
-                .toList();
+                                              .map(str -> {
+                                                  int semicolonIndex = str.indexOf(PATH_HASH_SEPARATOR);
+                                                  return str.substring(0, semicolonIndex);
+                                              })
+                                              .toList();
     }
 }
