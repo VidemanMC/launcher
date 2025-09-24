@@ -11,10 +11,12 @@ import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 import ru.videmanmc.launcher.http.client.domain.value.Hash;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.function.Function;
+import java.nio.charset.Charset;
+import java.util.function.UnaryOperator;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class GitHubHttpClient implements GameFilesClient, BinaryClient {
@@ -49,7 +51,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient {
 
     @Override
     @SneakyThrows
-    public GameFile download(String filePath, Function<String, String> abstractPathFormatting) {
+    public GameFile download(String filePath, UnaryOperator<String> abstractPathFormatting) {
         var uri = URI.create(
                 DOWNLOAD_URI_TEMPLATE.replace(
                         "{path}",
@@ -69,7 +71,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient {
     }
 
     private String encodeUri(String original) {
-        return original.replace(" ", "%20");
+        return URLEncoder.encode(original, Charset.defaultCharset());
     }
 
     @Override
