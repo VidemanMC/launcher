@@ -1,13 +1,13 @@
 package ru.videmanmc.launcher.mapper;
 
 import org.junit.jupiter.api.Test;
-import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
+import ru.videmanmc.launcher.http.client.PathFormatMapper;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PathFormatMapperTest {
+class PathFormatMapperTest {
 
     private final PathFormatMapper mapper = new PathFormatMapper();
 

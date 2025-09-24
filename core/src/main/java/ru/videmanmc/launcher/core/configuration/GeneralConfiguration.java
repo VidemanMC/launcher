@@ -10,25 +10,22 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.dto.LauncherVersion;
-import ru.videmanmc.launcher.core.factory.FilesChecksumFactory;
-import ru.videmanmc.launcher.core.factory.RemotePathFactory;
-import ru.videmanmc.launcher.core.mapper.PathFormatMapper;
 import ru.videmanmc.launcher.core.model.entity.Client;
 import ru.videmanmc.launcher.core.model.value.Settings;
 import ru.videmanmc.launcher.core.model.value.SyncSettings;
-import ru.videmanmc.launcher.core.model.value.files.GitHubFiles;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.core.model.value.files.LocalFiles;
-import ru.videmanmc.launcher.core.model.value.files.RemoteFiles;
 import ru.videmanmc.launcher.core.repository.ClientRepository;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.core.service.ClientService;
 import ru.videmanmc.launcher.core.service.GameRunningService;
 import ru.videmanmc.launcher.core.service.assets.JmcccMinecraftCoreService;
 import ru.videmanmc.launcher.core.service.assets.MinecraftCoreService;
-import ru.videmanmc.launcher.core.service.hashing.HashingService;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
+import ru.videmanmc.launcher.http.client.FilesChecksumFactory;
 import ru.videmanmc.launcher.http.client.GameFilesClient;
+import ru.videmanmc.launcher.http.client.GitHubHttpClient;
+import ru.videmanmc.launcher.http.client.HashingService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -42,17 +39,12 @@ public class GeneralConfiguration extends AbstractModule {
         bind(Client.class);
         bind(FilesChecksumFactory.class);
         bind(LocalFiles.class);
-        bind(RemoteFiles.class)
-                .to(GitHubFiles.class)
-                .in(Singleton.class);
 
         bind(SettingsRepository.class)
                 .in(Singleton.class);
         bind(ClientRepository.class);
 
         bind(ClientService.class);
-        bind(PathFormatMapper.class);
-        bind(RemotePathFactory.class);
         bind(HashingService.class).to(Md5HashingService.class);
         bind(MinecraftCoreService.class).to(JmcccMinecraftCoreService.class);
         bind(GameRunningService.class);
@@ -92,9 +84,8 @@ public class GeneralConfiguration extends AbstractModule {
     @Provides
     @Singleton
     SyncSettings syncSettings(ObjectMapper objectMapper, GameFilesClient gameFilesClient) throws JsonProcessingException {
-        var downloadedBytes = gameFilesClient.download(GitHubFiles.SYNC_SETTINGS)
+        var downloadedBytes = gameFilesClient.download(GitHubHttpClient.SYNC_SETTINGS)
                                              .contents(); //todo Exit method if offline mode is enabled
-
         return objectMapper.readValue(
                 new String(downloadedBytes, StandardCharsets.UTF_8),
                 SyncSettings.class

@@ -3,9 +3,7 @@ package ru.videmanmc.launcher.http.client.configuration;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import ru.videmanmc.launcher.http.client.BinaryClient;
-import ru.videmanmc.launcher.http.client.GameFilesClient;
-import ru.videmanmc.launcher.http.client.GitHubHttpClient;
+import ru.videmanmc.launcher.http.client.*;
 import ru.videmanmc.launcher.http.client.domain.value.BearerToken;
 
 import java.io.IOException;
@@ -22,7 +20,13 @@ public class HttpGuiceConfiguration extends AbstractModule {
                 .to(GitHubHttpClient.class)
                 .in(Singleton.class);
         bind(BinaryClient.class)
-                .to(GitHubHttpClient.class);
+                .to(GitHubHttpClient.class)
+                .in(Singleton.class);
+        bind(RemoteChecksumCalculator.class)
+                .to(GitHubHttpClient.class)
+                .in(Singleton.class);
+
+        bind(PathFormatMapper.class);
     }
 
     @Provides

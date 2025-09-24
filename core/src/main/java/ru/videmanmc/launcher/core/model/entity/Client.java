@@ -2,10 +2,11 @@ package ru.videmanmc.launcher.core.model.entity;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import ru.videmanmc.launcher.core.factory.RemotePathFactory;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.core.model.value.files.LocalFiles;
-import ru.videmanmc.launcher.core.model.value.files.RemoteFiles;
+import ru.videmanmc.launcher.http.client.GameFilesClient;
+import ru.videmanmc.launcher.http.client.PathFormatMapper;
+import ru.videmanmc.launcher.http.client.RemoteChecksumCalculator;
 import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 
 import java.util.List;
@@ -18,25 +19,32 @@ public class Client {
 
     private final LocalFiles localFiles;
 
-    private final RemoteFiles remoteFiles;
+    private final GameFilesClient gameFilesClient;
+
+    private final RemoteChecksumCalculator remoteChecksumCalculator;
 
     private final IgnoredFiles ignoredFiles;
 
-    private final RemotePathFactory remotePathFactory;
+    private final PathFormatMapper pathFormatMapper;
 
     public List<GameFile> update() {
         var oldFiles = getFilteredFiles(Filter.DELETE);
         localFiles.delete(oldFiles);
 
         var changedFiles = getFilteredFiles(Filter.DOWNLOAD);
-        return remoteFiles.download(
-                remotePathFactory.create(changedFiles, remoteFiles.listRemotePaths())
+        var remoteMappedChangedFiles = pathFormatMapper.abstractToRemoteFormat(
+                changedFiles,
+                gameFilesClient.getFilePaths()
         );
+
+        return remoteMappedChangedFiles.stream()
+                                       .map(gameFilesClient::download)
+                                       .toList();
     }
 
     private List<String> getFilteredFiles(Filter filter) {
         var localChecksum = localFiles.calculateChecksum();
-        var remoteChecksum = remoteFiles.calculateChecksum();
+        var remoteChecksum = remoteChecksumCalculator.calculateChecksum();
 
         var difference = switch (filter) {
             case DELETE -> localChecksum.difference(remoteChecksum);
