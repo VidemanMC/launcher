@@ -3,6 +3,7 @@ package ru.videmanmc.launcher.http.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.uwyn.urlencoder.UrlEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.http.client.domain.entity.Binary;
@@ -12,11 +13,9 @@ import ru.videmanmc.launcher.http.client.domain.value.GameFile;
 import ru.videmanmc.launcher.http.client.domain.value.Hash;
 
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Stream;
@@ -58,9 +57,8 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
         var uri = URI.create(
                 DOWNLOAD_URI_TEMPLATE.replace(
                         "{path}",
-                        encodeUri(filePath)
-                )
-        );
+                        UrlEncoder.encode(filePath)
+                ));
         var request = httpBuilder.uri(uri)
                                  .build();
         var bytes = httpClient.send(
@@ -71,10 +69,6 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
         var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
 
         return new GameFile(bytes, abstractFilePath);
-    }
-
-    private String encodeUri(String original) {
-        return URLEncoder.encode(original, Charset.defaultCharset());
     }
 
     @Override
