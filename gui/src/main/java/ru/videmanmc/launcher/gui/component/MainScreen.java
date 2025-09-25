@@ -9,7 +9,6 @@ import ru.videmanmc.launcher.core.service.GameRunningService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class MainScreen implements LauncherScreen {
@@ -23,8 +22,6 @@ public class MainScreen implements LauncherScreen {
     private JTextField textField;
 
     private JCheckBox offlineCheckbox;
-
-    private CompletableFuture<Void> waitLock = new CompletableFuture<>();
 
     @SneakyThrows
     @Override
@@ -69,7 +66,6 @@ public class MainScreen implements LauncherScreen {
             new Thread(() -> gameRunningService.run(textField.getText(), !offlineCheckbox.isSelected())).start();
 
             cacheLogin(textField.getText());
-            waitLock.complete(null);
         });
 
 
@@ -98,8 +94,9 @@ public class MainScreen implements LauncherScreen {
             textField.requestFocusInWindow();
         });
 
+        frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        waitLock.get();
     }
 
     private void cacheLogin(String login) {

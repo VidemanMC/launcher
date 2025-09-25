@@ -24,6 +24,7 @@ public class GameRunningService {
         }
 
         minecraftCoreService.run(syncSettings.minecraftVersion(), nickname);
+        System.exit(0);
     }
 
 }
