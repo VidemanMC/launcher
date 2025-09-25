@@ -31,7 +31,12 @@ public class Client {
         var oldFiles = getFilteredFiles(Filter.DELETE);
         localFiles.delete(oldFiles);
 
+        System.out.println("Delete: " + oldFiles);
+
         var changedFiles = getFilteredFiles(Filter.DOWNLOAD);
+
+        System.out.println("Download: " + changedFiles);
+
         var remoteMappedChangedFiles = pathFormatMapper.abstractToRemoteFormat(
                 changedFiles,
                 gameFilesClient.getFilePaths()

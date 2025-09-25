@@ -27,15 +27,20 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
 
     private final Settings settings;
 
-    @Override
     @SneakyThrows
+    @Override
     public void download(String minecraftVersion) {
         var dir = new MinecraftDirectory(MAIN_DIRECTORY_PATH + CLIENT_SUBDIRECTORY_PATH);
         var downloader = MinecraftDownloaderBuilder.create()
                                                    .providerChain(DownloadProviderChain.create()
                                                                                        .addProvider(new ForgeDownloadProviderWrapper()))
                                                    .build();
-        downloader.downloadIncrementally(dir, minecraftVersion, createCallback(downloader), CacheOption.CACHE)
+        downloader.downloadIncrementally(
+                          dir,
+                          minecraftVersion,
+                          createCallback(downloader),
+                          CacheOption.CACHE
+                  )
                   .get();
     }
 
@@ -78,7 +83,6 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
 
                     @Override
                     public void updateProgress(long l, long l1) {
-                        System.out.println(l + "/" + l1);
                     }
 
                     @Override

@@ -7,7 +7,7 @@ import org.to2mbn.jmccc.mcdownloader.download.tasks.ResultProcessor;
 import org.to2mbn.jmccc.option.MinecraftDirectory;
 import org.to2mbn.jmccc.util.IOUtils;
 
-import java.lang.reflect.Method;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -17,6 +17,8 @@ import java.nio.file.Path;
  * A little bit refactored copy of org.to2mbn.jmccc.mcdownloader.provider.forge.InstallProfileProcessor
  */
 class InstallProfileProcessor implements ResultProcessor<byte[], String> {
+
+    private static final String FORGE_INSTALLER_NAME = "forge-installer.jar";
 
     private final MinecraftDirectory mcdir;
 
@@ -28,29 +30,20 @@ class InstallProfileProcessor implements ResultProcessor<byte[], String> {
      * @return version to create by the name subdirectory in /versions
      */
     @Override
-    public String process(byte[] forgeInstallerBytes) throws Exception {
-        Path installerPath = mcdir.get("forge-installer.jar");
+    public String process(byte[] forgeInstallerBytes) throws IOException, InterruptedException {
+        System.out.println("0110");
+
+        Path installerPath = mcdir.get(FORGE_INSTALLER_NAME);
         Files.write(installerPath, forgeInstallerBytes);
-
         prepareInstall();
-        installForge(installerPath);
+        installForge();
 
-        var newProfileVersion = extractProfileVersion(installerPath);
-
-        Files.delete(installerPath);
-        return newProfileVersion;
-    }
-    @SneakyThrows
-    private String extractProfileVersion(Path installerPath) {
-        try (var urlClassLoader = new URLClassLoader(new URL[] {installerPath.toUri().toURL()})) {
-            var profileStream = urlClassLoader.getResourceAsStream("install_profile.json");
-            var bytes = IOUtils.toByteArray(profileStream);
-            JSONObject installProfile = new JSONObject(new JSONTokener(new String(bytes)));
-
-            return installProfile.optString("version");
-        }
+        return extractProfileVersion(installerPath);
     }
 
+    /**
+     * In that file installer writes forge`s profile
+     */
     @SneakyThrows
     private void prepareInstall() {
         Path launcherProfile = mcdir.get("launcher_profiles.json");
@@ -59,11 +52,29 @@ class InstallProfileProcessor implements ResultProcessor<byte[], String> {
         }
     }
 
-    private void installForge(Path installerJar) throws Exception {
-        try (URLClassLoader cl = new URLClassLoader(new URL[]{installerJar.toUri().toURL()})) {
-            Class<?> installer = cl.loadClass("net.minecraftforge.installer.SimpleInstaller");
-            Method main = installer.getMethod("main", String[].class);
-            main.invoke(null, (Object) new String[]{"--installClient", mcdir.getAbsolutePath()});
+    private void installForge() throws IOException, InterruptedException {
+        var home = Path.of(mcdir.getAbsolutePath());
+        new ProcessBuilder(
+                "java",
+                "-cp",
+                home.resolve(FORGE_INSTALLER_NAME)
+                    .toString(),
+                "net.minecraftforge.installer.SimpleInstaller",
+                "--installClient",
+                home.toString()
+        )
+                .inheritIO()
+                .start()
+                .waitFor();
+    }
+
+    private String extractProfileVersion(Path installerPath) throws IOException {
+        try (var urlClassLoader = new URLClassLoader(new URL[]{installerPath.toUri().toURL()})) {
+            var profileStream = urlClassLoader.getResourceAsStream("install_profile.json");
+            var bytes = IOUtils.toByteArray(profileStream);
+            JSONObject installProfile = new JSONObject(new JSONTokener(new String(bytes)));
+
+            return installProfile.optString("version");
         }
     }
 }
