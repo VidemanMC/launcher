@@ -28,40 +28,15 @@ public class JmcccMinecraftCoreService implements MinecraftCoreService {
     private final Settings settings;
 
     @Override
+    @SneakyThrows
     public void download(String minecraftVersion) {
         var dir = new MinecraftDirectory(MAIN_DIRECTORY_PATH + CLIENT_SUBDIRECTORY_PATH);
-
-        downloadVanilla(
-                stripVanillaVersion(minecraftVersion),
-                dir
-        ); // костыль, чтобы сркыть ошибку с отсутствием 1.20.1.json
-        downloadForge(minecraftVersion, dir);
-    }
-
-    private String stripVanillaVersion(String minecraftVersion) {
-        int index = minecraftVersion.indexOf('-');
-
-        if (index == -1) return minecraftVersion;
-
-        return minecraftVersion.substring(0, index);
-    }
-
-    @SneakyThrows
-    private void downloadVanilla(String vanillaVersion, MinecraftDirectory dir) {
-        var downloader = MinecraftDownloaderBuilder.buildDefault();
-        downloader.downloadIncrementally(dir, vanillaVersion, createCallback(downloader), CacheOption.CACHE)
-                  .get();
-    }
-
-    @SneakyThrows
-    private void downloadForge(String forgeVersion, MinecraftDirectory dir) {
         var downloader = MinecraftDownloaderBuilder.create()
                                                    .providerChain(DownloadProviderChain.create()
                                                                                        .addProvider(new ForgeDownloadProviderWrapper()))
                                                    .build();
-        downloader.downloadIncrementally(dir, forgeVersion, createCallback(downloader), CacheOption.CACHE)
+        downloader.downloadIncrementally(dir, minecraftVersion, createCallback(downloader), CacheOption.CACHE)
                   .get();
-
     }
 
     @SneakyThrows
