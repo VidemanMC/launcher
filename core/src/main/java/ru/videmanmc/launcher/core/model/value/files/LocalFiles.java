@@ -3,9 +3,9 @@ package ru.videmanmc.launcher.core.model.value.files;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.core.repository.ClientRepository;
-import ru.videmanmc.launcher.http.client.FilesChecksumFactory;
-import ru.videmanmc.launcher.http.client.LocalChecksumCalculator;
-import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
+import ru.videmanmc.launcher.dto.http.FilesChecksum;
+import ru.videmanmc.launcher.http_client.github.FilesChecksumFactory;
+import ru.videmanmc.launcher.http_client.github.LocalChecksumCalculator;
 
 import java.util.List;
 

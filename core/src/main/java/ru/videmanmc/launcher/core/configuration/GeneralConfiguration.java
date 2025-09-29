@@ -22,10 +22,10 @@ import ru.videmanmc.launcher.core.service.GameRunningService;
 import ru.videmanmc.launcher.core.service.assets.JmcccMinecraftCoreService;
 import ru.videmanmc.launcher.core.service.assets.MinecraftCoreService;
 import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
-import ru.videmanmc.launcher.http.client.FilesChecksumFactory;
-import ru.videmanmc.launcher.http.client.GameFilesClient;
-import ru.videmanmc.launcher.http.client.GitHubHttpClient;
-import ru.videmanmc.launcher.http.client.HashingService;
+import ru.videmanmc.launcher.http_client.github.FilesChecksumFactory;
+import ru.videmanmc.launcher.http_client.github.GameFilesClient;
+import ru.videmanmc.launcher.http_client.github.GitHubHttpClient;
+import ru.videmanmc.launcher.http_client.github.HashingService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

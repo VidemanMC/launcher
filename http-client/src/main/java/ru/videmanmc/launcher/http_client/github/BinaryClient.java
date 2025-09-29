@@ -1,7 +1,8 @@
-package ru.videmanmc.launcher.http.client;
+package ru.videmanmc.launcher.http_client.github;
 
-import ru.videmanmc.launcher.http.client.domain.entity.Binary;
-import ru.videmanmc.launcher.http.client.domain.value.BinaryInfo;
+
+import ru.videmanmc.launcher.dto.http.Binary;
+import ru.videmanmc.launcher.dto.http.BinaryInfo;
 
 /**
  * Used for retrieving new launcher binary

@@ -2,8 +2,8 @@ package ru.videmanmc.launcher.bootloader.repository;
 
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
-import ru.videmanmc.launcher.http.client.domain.entity.Binary;
-import ru.videmanmc.launcher.http.client.domain.value.Hash;
+import ru.videmanmc.launcher.dto.http.Binary;
+import ru.videmanmc.launcher.dto.http.Hash;
 
 import java.io.IOException;
 import java.nio.file.Files;

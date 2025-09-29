@@ -3,15 +3,14 @@ package ru.videmanmc.launcher.bootloader.service;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.bootloader.repository.BinaryRepository;
-import ru.videmanmc.launcher.http.client.BinaryClient;
-import ru.videmanmc.launcher.http.client.domain.entity.Binary;
-import ru.videmanmc.launcher.http.client.domain.value.BinaryInfo;
+import ru.videmanmc.launcher.dto.http.BinaryInfo;
+import ru.videmanmc.launcher.http_client.github.BinaryClient;
 
 import static ru.videmanmc.launcher.constants.BinariesNamingConstants.LAUNCHER_PREFIX;
 
 
 /**
- * Gets new {@link Binary} if it's available.
+ * Gets new {@link ru.videmanmc.launcher.dto.http.Binary} if it's available.
  */
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class UpdatingService {
@@ -34,8 +33,8 @@ public class UpdatingService {
         }
 
         boolean hashesNotEqual = binary.hash()
-                .hash()
-                .equals(remoteBinaryInfo.hash());
+                                       .hash()
+                                       .equals(remoteBinaryInfo.hash());
 
         if (hashesNotEqual) {
             return downloadRemoteBinary(remoteBinaryInfo);

@@ -1,6 +1,7 @@
-package ru.videmanmc.launcher.http.client;
+package ru.videmanmc.launcher.http_client.github;
 
-import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
+
+import ru.videmanmc.launcher.dto.http.FilesChecksum;
 
 public sealed interface ChecksumCalculator permits RemoteChecksumCalculator, LocalChecksumCalculator {
 

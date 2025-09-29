@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+    id 'launcher.java-build'
+    id 'launcher.version-management'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}

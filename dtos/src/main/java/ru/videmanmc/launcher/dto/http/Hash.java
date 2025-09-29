@@ -1,7 +1,6 @@
-package ru.videmanmc.launcher.http.client.domain.value;
+package ru.videmanmc.launcher.dto.http;
 
 import lombok.NonNull;
-import ru.videmanmc.launcher.http.client.domain.entity.Binary;
 
 /**
  * A hash of a {@link Binary}. <br>

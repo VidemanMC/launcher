@@ -1,8 +1,8 @@
-package ru.videmanmc.launcher.http.client;
+package ru.videmanmc.launcher.http_client.github;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
+import ru.videmanmc.launcher.dto.http.FilesChecksum;
 
 import java.io.IOException;
 import java.nio.file.Files;

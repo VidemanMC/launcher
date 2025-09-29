@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
 import ru.videmanmc.launcher.core.model.value.files.LocalFiles;
-import ru.videmanmc.launcher.http.client.GameFilesClient;
-import ru.videmanmc.launcher.http.client.PathFormatMapper;
-import ru.videmanmc.launcher.http.client.RemoteChecksumCalculator;
-import ru.videmanmc.launcher.http.client.domain.value.GameFile;
+import ru.videmanmc.launcher.dto.http.GameFile;
+import ru.videmanmc.launcher.http_client.github.GameFilesClient;
+import ru.videmanmc.launcher.http_client.github.PathFormatMapper;
+import ru.videmanmc.launcher.http_client.github.RemoteChecksumCalculator;
 
 import java.util.List;
 

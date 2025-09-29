@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client;
+package ru.videmanmc.launcher.http_client.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,11 +6,7 @@ import com.google.inject.Inject;
 import com.uwyn.urlencoder.UrlEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.http.client.domain.entity.Binary;
-import ru.videmanmc.launcher.http.client.domain.value.BinaryInfo;
-import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
-import ru.videmanmc.launcher.http.client.domain.value.GameFile;
-import ru.videmanmc.launcher.http.client.domain.value.Hash;
+import ru.videmanmc.launcher.dto.http.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;

@@ -1,7 +1,7 @@
 package ru.videmanmc.launcher.core.service.hashing;
 
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.http.client.HashingService;
+import ru.videmanmc.launcher.http_client.github.HashingService;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
