@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client.configuration;
+package ru.videmanmc.launcher.http_client.configuration;
 
 import jakarta.inject.Qualifier;
 

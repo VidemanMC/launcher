@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client.domain.value;
+package ru.videmanmc.launcher.dto.http;
 
 /**
  * Represents file of a game client.

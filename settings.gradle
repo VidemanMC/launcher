@@ -4,4 +4,5 @@ include('core',
         'gui',
         'constants',
         'http-client',
-        'bootloader')
+        'bootloader',
+        'dtos')

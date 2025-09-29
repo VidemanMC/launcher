@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     implementation project(':constants')
+    implementation project(':dtos')
     implementation project(':http-client')
 
     implementation "dev.3-3:jmccc:$jmcccVer"

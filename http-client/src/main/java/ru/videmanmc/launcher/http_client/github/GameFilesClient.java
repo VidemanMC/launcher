@@ -1,6 +1,7 @@
-package ru.videmanmc.launcher.http.client;
+package ru.videmanmc.launcher.http_client.github;
 
-import ru.videmanmc.launcher.http.client.domain.value.GameFile;
+
+import ru.videmanmc.launcher.dto.http.GameFile;
 
 import java.util.List;
 

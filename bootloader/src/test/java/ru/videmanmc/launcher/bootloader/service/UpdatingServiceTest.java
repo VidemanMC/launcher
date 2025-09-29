@@ -6,10 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.videmanmc.launcher.bootloader.repository.BinaryRepository;
-import ru.videmanmc.launcher.http.client.GitHubHttpClient;
-import ru.videmanmc.launcher.http.client.domain.entity.Binary;
-import ru.videmanmc.launcher.http.client.domain.value.BinaryInfo;
-import ru.videmanmc.launcher.http.client.domain.value.Hash;
+import ru.videmanmc.launcher.dto.http.Binary;
+import ru.videmanmc.launcher.dto.http.BinaryInfo;
+import ru.videmanmc.launcher.dto.http.Hash;
+import ru.videmanmc.launcher.http_client.github.GitHubHttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;

@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client.domain.value;
+package ru.videmanmc.launcher.dto.http;
 
 /**
  * Info about a remote binary, not the binary itself

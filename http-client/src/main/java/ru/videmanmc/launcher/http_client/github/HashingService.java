@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client;
+package ru.videmanmc.launcher.http_client.github;
 
 public interface HashingService {
 

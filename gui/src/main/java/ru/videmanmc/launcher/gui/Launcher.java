@@ -7,7 +7,7 @@ import ru.videmanmc.launcher.core.configuration.GeneralConfiguration;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.gui.component.MainScreen;
 import ru.videmanmc.launcher.gui.configuration.UiGuiceConfiguration;
-import ru.videmanmc.launcher.http.client.configuration.HttpGuiceConfiguration;
+import ru.videmanmc.launcher.http_client.configuration.HttpGuiceConfiguration;
 
 import javax.swing.*;
 import java.awt.*;

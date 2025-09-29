@@ -1,7 +1,7 @@
 package ru.videmanmc.launcher.mapper;
 
 import org.junit.jupiter.api.Test;
-import ru.videmanmc.launcher.http.client.PathFormatMapper;
+import ru.videmanmc.launcher.http_client.github.PathFormatMapper;
 
 import java.util.List;
 

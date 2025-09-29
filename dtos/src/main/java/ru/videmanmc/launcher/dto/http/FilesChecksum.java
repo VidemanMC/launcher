@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.http.client.domain.value;
+package ru.videmanmc.launcher.dto.http;
 
 import java.util.ArrayList;
 import java.util.List;

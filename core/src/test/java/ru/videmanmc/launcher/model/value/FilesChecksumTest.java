@@ -1,7 +1,7 @@
 package ru.videmanmc.launcher.model.value;
 
 import org.junit.jupiter.api.Test;
-import ru.videmanmc.launcher.http.client.domain.value.FilesChecksum;
+import ru.videmanmc.launcher.dto.http.FilesChecksum;
 
 import java.util.List;
 import java.util.Map;

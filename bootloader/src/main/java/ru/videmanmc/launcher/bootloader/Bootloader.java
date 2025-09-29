@@ -6,7 +6,7 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import ru.videmanmc.launcher.bootloader.configuration.BasicGuiceConfiguration;
 import ru.videmanmc.launcher.bootloader.service.StartingService;
-import ru.videmanmc.launcher.http.client.configuration.HttpGuiceConfiguration;
+import ru.videmanmc.launcher.http_client.configuration.HttpGuiceConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
