@@ -5,10 +5,15 @@ import com.google.inject.Inject;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.bootloader.configuration.BasicGuiceConfiguration;
 import ru.videmanmc.launcher.bootloader.service.StartingService;
+import ru.videmanmc.launcher.gui.component.ExceptionDialog;
 import ru.videmanmc.launcher.http_client.configuration.HttpGuiceConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import static ru.videmanmc.launcher.constants.ErrorMessageConstants.GENERAL_ERROR;
 
 public class Bootloader {
 
@@ -31,7 +36,6 @@ public class Bootloader {
         var bootstrap = injector.getInstance(Bootloader.class);
         bootstrap.show();
         bootstrap.start();
-        bootstrap.hide();
     }
 
     void show() {
@@ -47,14 +51,18 @@ public class Bootloader {
     }
 
     public void showErrorModal(Exception e) {
-        //
+        new ExceptionDialog(formatGeneral(e));
     }
 
-    /**
-     * Parent process can`t be stopped until it`s children processes work. This method is workaround.
-     */
-    void hide() {
-        System.exit(0);
+    private String formatGeneral(Throwable throwable) {
+        var stacktrace = Arrays.stream(throwable.getStackTrace())
+                               .map(StackTraceElement::toString)
+                               .collect(Collectors.joining("<br>"));
+        return GENERAL_ERROR
+                .formatted(
+                        throwable.getMessage(),
+                        stacktrace
+                );
     }
 
     @SneakyThrows
