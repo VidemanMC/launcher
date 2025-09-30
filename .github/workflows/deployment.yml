@@ -5,6 +5,9 @@ on:
     types: [closed]
     branches: [main]
 
+env:
+  auth_token: ${{ secrets.AUTH_TOKEN }}
+
 jobs:
   build-linux-bootloader:
     name: Linux Bootloader

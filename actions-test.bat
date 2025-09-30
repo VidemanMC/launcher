@@ -1,1 +1,1 @@
-act -P windows-latest=-self-hosted --pull=false -j release --artifact-server-path /tmp/artifacts
+act -P windows-latest=-self-hosted --pull=false -j release --artifact-server-path /tmp/artifacts -s AUTH_TOKEN=%auth_token%
