@@ -10,8 +10,12 @@ import ru.videmanmc.launcher.events.SettingsChanged;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainScreen implements LauncherScreen, IEventListener {
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private String login;
 
@@ -83,11 +87,10 @@ public class MainScreen implements LauncherScreen, IEventListener {
                 return;
             }
 
-            new Thread(() ->
-                               new GameLaunchInitiated().emit(new GameLaunchInitiated.Payload(
-                                       textField.getText(),
-                                       !offlineCheckbox.isSelected()
-                               ))
+            new Thread(() -> new GameLaunchInitiated().emit(new GameLaunchInitiated.Payload(
+                    textField.getText(),
+                    !offlineCheckbox.isSelected()
+            ))
             ).start();
 
             saveLogin(textField.getText());

@@ -1,5 +1,6 @@
 package ru.videmanmc.launcher.http_client.github;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -7,7 +8,9 @@ import com.uwyn.urlencoder.UrlEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.dto.http.*;
+import ru.videmanmc.launcher.http_client.exception.HttpDownloadException;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -49,7 +52,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
 
     @Override
     @SneakyThrows
-    public GameFile download(String filePath) {
+    public GameFile download(String filePath) throws HttpDownloadException {
         var uri = URI.create(
                 DOWNLOAD_URI_TEMPLATE.replace(
                         "{path}",
@@ -57,33 +60,37 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                 ));
         var request = httpBuilder.uri(uri)
                                  .build();
-        var bytes = httpClient.send(
-                                      request,
-                                      HttpResponse.BodyHandlers.ofByteArray()
-                              )
-                              .body();
+        byte[] response = httpClient.send(
+                                            request,
+                                            HttpResponse.BodyHandlers.ofByteArray()
+                                    )
+                                    .body();
+        validateStatusCode(response);
+
         var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
 
-        return new GameFile(bytes, abstractFilePath);
+        return new GameFile(response, abstractFilePath);
     }
 
     @Override
     @SneakyThrows
-    public BinaryInfo getInfoByPrefix(String namePrefix) {
+    public BinaryInfo getInfoByPrefix(String namePrefix) throws HttpDownloadException {
         var uri = URI.create(LATEST_RELEASES_URI);
         var request = httpBuilder.uri(uri)
                                  .build();
-        var rawReleaseInfo = httpClient.send(
-                                               request,
-                                               HttpResponse.BodyHandlers.ofString()
-                                       )
-                                       .body();
-        var jsonNode = objectMapper.readTree(rawReleaseInfo);
+        byte[] response = httpClient.send(
+                                            request,
+                                            HttpResponse.BodyHandlers.ofByteArray()
+                                    )
+                                    .body();
+        validateStatusCode(response);
 
-        return constructBinary(jsonNode, namePrefix);
+        var jsonNode = objectMapper.readTree(response);
+
+        return constructBinaryInfo(jsonNode, namePrefix);
     }
 
-    private BinaryInfo constructBinary(JsonNode releaseNode, String namePrefix) {
+    private BinaryInfo constructBinaryInfo(JsonNode releaseNode, String namePrefix) {
         return releaseNode.get("assets")
                           .valueStream()
                           .filter(jsonAsset -> {
@@ -106,20 +113,24 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
     }
 
     @SneakyThrows
-    public Binary getBinary(BinaryInfo info) {
+    public Binary getBinary(BinaryInfo info) throws HttpDownloadException {
         var request = HttpRequest.newBuilder(URI.create(
                                          info.downloadUrl()
                                  ))
                                  .build();
-        HttpResponse<byte[]> response = httpClient.send(
-                request,
-                HttpResponse.BodyHandlers.ofByteArray()
-        );
+        byte[] response = httpClient.send(
+                                            request,
+                                            HttpResponse.BodyHandlers.ofByteArray()
+                                    )
+                                    .body();
+
+        validateStatusCode(response);
+
         var hash = trim(info.hash());
 
         return new Binary(
                 new Hash(hash),
-                response.body(),
+                response,
                 info.name()
         );
     }
@@ -127,6 +138,33 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
     private String trim(String hash) {
         var githubAlgNamePrefixIndex = 7;
         return hash.substring(githubAlgNamePrefixIndex);
+    }
+
+    /**
+     * Validate status codes referencing <a href="https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api?apiVersion=2022-11-28">GitHub Rest Api Docs</a>
+     */
+    private void validateStatusCode(byte[] response) throws HttpDownloadException {
+        try {
+            var json = objectMapper.readTree(response);
+            var statusNode = json.get("status");
+
+            if (statusNode == null) {
+                return;
+            }
+
+            var status = statusNode.asText();
+            switch (status) {
+                case "403", "429" -> throw new HttpDownloadException();
+                case "404" -> throw new IllegalStateException("Existing resource not found");
+                default -> {
+                    // ok, keep working
+                }
+            }
+        } catch (JsonProcessingException e) {
+            // ok, content is binary file
+        } catch (IOException e) {
+            throw new HttpDownloadException();
+        }
     }
 
     @Override
@@ -173,6 +211,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
         return cachedHashNamePairs;
     }
 
+    @SneakyThrows
     private List<String> downloadNameHashPairs() {
         var downloadedHashesString = new String(
                 download(FILE_NAME_HASHES)
