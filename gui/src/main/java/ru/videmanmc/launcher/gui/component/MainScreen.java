@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.dto.LauncherVersion;
-import ru.videmanmc.launcher.core.model.value.Settings;
 import ru.videmanmc.launcher.core.service.GameRunningService;
+import ru.videmanmc.launcher.dto.Settings;
 
 import javax.swing.*;
 import java.awt.*;
