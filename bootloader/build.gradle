@@ -27,10 +27,12 @@ application {
 
 repositories {
     mavenCentral()
+    maven { url = 'https://repo.bb1.fun/releases' }
 }
 
 dependencies {
     implementation project(':constants')
+    implementation project(':gui')
     implementation project(':dtos')
     implementation project(':http-client')
 
