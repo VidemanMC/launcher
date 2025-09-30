@@ -1,4 +1,13 @@
 plugins {
     id 'launcher.java-build'
+    id 'launcher.version-management'
     id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "org.jetbrains:annotations:$annotationsVer"
 }
