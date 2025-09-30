@@ -9,6 +9,7 @@ import ru.videmanmc.launcher.bootloader.repository.BinaryRepository;
 import ru.videmanmc.launcher.dto.http.Binary;
 import ru.videmanmc.launcher.dto.http.BinaryInfo;
 import ru.videmanmc.launcher.dto.http.Hash;
+import ru.videmanmc.launcher.http_client.exception.HttpDownloadException;
 import ru.videmanmc.launcher.http_client.github.GitHubHttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +31,7 @@ class UpdatingServiceTest {
 
 
     @Test
-    void update_binaryNotExists_downloadsBinary() {
+    void update_binaryNotExists_downloadsBinary() throws HttpDownloadException {
         // arrange
         var binaryInfo = binaryInfo();
         var binary = localBinary();
@@ -50,7 +51,7 @@ class UpdatingServiceTest {
     }
 
     @Test
-    void update_binaryExistsAndHashesDifferent_downloadsBinary() {
+    void update_binaryExistsAndHashesDifferent_downloadsBinary() throws HttpDownloadException {
         // arrange
         var binaryInfo = binaryInfo();
         var localBinary = localBinary();
@@ -72,7 +73,7 @@ class UpdatingServiceTest {
 
 
     @Test
-    void update_binaryExistsAndHashesEqual_returnsLocalBinaryName() {
+    void update_binaryExistsAndHashesEqual_returnsLocalBinaryName() throws HttpDownloadException {
         // arrange
         var binaryInfo = binaryInfo();
         var localBinary = localBinary();

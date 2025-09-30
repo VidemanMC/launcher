@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.core.configuration.CoreGuiceConfiguration;
 import ru.videmanmc.launcher.core.configuration.ListenerGuiceConfiguration;
+import ru.videmanmc.launcher.core.error_handling.GlobalExceptionHandler;
 import ru.videmanmc.launcher.core.repository.SettingsRepository;
 import ru.videmanmc.launcher.dto.LauncherVersion;
 import ru.videmanmc.launcher.events.LauncherInitialized;
@@ -27,13 +28,14 @@ public class Launcher {
     private final List<IEventListener> unused; // init listeners by Guice, without it events won't be listened
 
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
+
         var injector = Guice.createInjector(
                 new CoreGuiceConfiguration(),
                 new HttpGuiceConfiguration(),
                 new EventsGuiceConfiguration(),
                 new ListenerGuiceConfiguration()
         );
-
         var launcher = injector.getInstance(Launcher.class);
         launcher.start();
         launcher.stop();
@@ -41,9 +43,7 @@ public class Launcher {
 
     public void start() {
         var settings = settingsRepository.getOrLoad();
-
         new MainScreen().register();
-
         new LauncherInitialized().emit(
                 new LauncherInitialized.Payload(settings, version)
         );

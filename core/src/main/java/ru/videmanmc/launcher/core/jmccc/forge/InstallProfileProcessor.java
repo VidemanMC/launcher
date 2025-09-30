@@ -31,8 +31,6 @@ class InstallProfileProcessor implements ResultProcessor<byte[], String> {
      */
     @Override
     public String process(byte[] forgeInstallerBytes) throws IOException, InterruptedException {
-        System.out.println("0110");
-
         Path installerPath = mcdir.get(FORGE_INSTALLER_NAME);
         Files.write(installerPath, forgeInstallerBytes);
         prepareInstall();
@@ -41,12 +39,9 @@ class InstallProfileProcessor implements ResultProcessor<byte[], String> {
         return extractProfileVersion(installerPath);
     }
 
-    /**
-     * In that file installer writes forge`s profile
-     */
     @SneakyThrows
     private void prepareInstall() {
-        Path launcherProfile = mcdir.get("launcher_profiles.json");
+        Path launcherProfile = mcdir.get("launcher_profiles.json"); // In that file installer writes forge`s profile
         if (!Files.exists(launcherProfile)) {
             Files.writeString(launcherProfile, "{}");
         }

@@ -22,7 +22,7 @@ public class ExceptionDialog extends JFrame {
             <head>
             <meta charset="UTF-8" />
             <style>
-              p, a, h1 {
+              p, a, h1, h2 {
                 font-size: 25px;
               }
             </style>
@@ -33,13 +33,9 @@ public class ExceptionDialog extends JFrame {
             </html>
             """;
 
-    public ExceptionDialog(String message) {
+    public ExceptionDialog(String htmlMessage) {
         super("ОШИБКА");
-        showExceptionDialog(insertInTemplate(message));
-    }
-
-    private String insertInTemplate(String message) {
-        return HTML_TEMPLATE.formatted(message);
+        showExceptionDialog(HTML_TEMPLATE.formatted(htmlMessage));
     }
 
     private void showExceptionDialog(String message) {
@@ -95,6 +91,5 @@ public class ExceptionDialog extends JFrame {
                    .exec(new String[]{"xdg-open", uri.toString()});
         }
     }
-
 
 }
