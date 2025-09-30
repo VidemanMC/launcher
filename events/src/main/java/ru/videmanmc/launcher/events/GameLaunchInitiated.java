@@ -14,9 +14,8 @@ public class GameLaunchInitiated extends Event<GameLaunchInitiated.Payload> {
     }
 
     /**
-     *
      * @param login user login
-     * @param isOffline whether to run game in offline mode (skip update process)
+     * @param isOnline whether to update client before launch
      */
-    public record Payload(String login, boolean isOffline) {}
+    public record Payload(String login, boolean isOnline) {}
 }

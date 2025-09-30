@@ -1,32 +1,51 @@
 package ru.videmanmc.launcher.gui.component;
 
-import com.google.inject.Inject;
-import lombok.RequiredArgsConstructor;
+import fun.bb1.events.abstraction.listener.EventHandler;
+import fun.bb1.events.abstraction.listener.IEventListener;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.core.dto.LauncherVersion;
-import ru.videmanmc.launcher.core.service.GameRunningService;
 import ru.videmanmc.launcher.dto.Settings;
+import ru.videmanmc.launcher.events.GameLaunchInitiated;
+import ru.videmanmc.launcher.events.LauncherInitialized;
+import ru.videmanmc.launcher.events.SettingsChanged;
 
 import javax.swing.*;
 import java.awt.*;
 
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
-public class MainScreen implements LauncherScreen {
+public class MainScreen implements LauncherScreen, IEventListener {
 
-    private final Settings settings;
+    private String login;
 
-    private final LauncherVersion launcherVersion;
+    private String version;
 
-    private final GameRunningService gameRunningService; //todo add event system and remove this shit from there
+    private Settings cachedSettings; // cache to avoid obj creation time consumption
 
-    private JTextField textField;
-
-    private JCheckBox offlineCheckbox;
+    @EventHandler(LauncherInitialized.EVENT_NAME)
+    public void on(LauncherInitialized.Payload payload) {
+        cachedSettings = payload.settings();
+        login = cachedSettings
+                .getGame()
+                .getLogin();
+        version = payload.version()
+                         .version();
+        show();
+    }
 
     @SneakyThrows
     @Override
-    public void show(JFrame frame) {
-        frame.setTitle("VidemanMC " + launcherVersion.version());
+    public void show() {
+        Font font = new Font("Arial", Font.PLAIN, 18);
+        UIManager.put("Label.font", font);
+        UIManager.put("TextArea.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("Button.font", font);
+        UIManager.put("Dialog.font", font);
+
+        var frame = new JFrame();
+        var imageUrl = getClass().getClassLoader()
+                                 .getResource("icon64.png");
+        var icon = new ImageIcon(imageUrl);
+        frame.setIconImage(icon.getImage());
+        frame.setTitle("VidemanMC " + version);
         frame.setSize(600, 600);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -37,7 +56,7 @@ public class MainScreen implements LauncherScreen {
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Настройка текстового поля
-        textField = new JTextField(getCachedLogin(), 20);
+        var textField = new JTextField(login, 20);
         textField.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 20));
         textField.setBackground(Color.BLACK);
         textField.setForeground(Color.WHITE);
@@ -45,7 +64,7 @@ public class MainScreen implements LauncherScreen {
         textField.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Checkbox
-        offlineCheckbox = new JCheckBox("Оффлайн-режим");
+        var offlineCheckbox = new JCheckBox("Оффлайн-режим");
         offlineCheckbox.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 15));
 
         // Кнопка
@@ -63,9 +82,15 @@ public class MainScreen implements LauncherScreen {
                 textField.requestFocusInWindow();
                 return;
             }
-            new Thread(() -> gameRunningService.run(textField.getText(), !offlineCheckbox.isSelected())).start();
 
-            cacheLogin(textField.getText());
+            new Thread(() ->
+                               new GameLaunchInitiated().emit(new GameLaunchInitiated.Payload(
+                                       textField.getText(),
+                                       !offlineCheckbox.isSelected()
+                               ))
+            ).start();
+
+            saveLogin(textField.getText());
         });
 
 
@@ -90,22 +115,16 @@ public class MainScreen implements LauncherScreen {
         frame.add(panel, BorderLayout.CENTER);
 
         // Расположим фокус на текстовом поле после отображения
-        SwingUtilities.invokeLater(() -> {
-            textField.requestFocusInWindow();
-        });
+        SwingUtilities.invokeLater(textField::requestFocusInWindow);
 
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
-    private void cacheLogin(String login) {
-        settings.getGame()
-                .setLogin(login);
-    }
-
-    private String getCachedLogin() {
-        return settings.getGame()
-                       .getLogin();
+    private void saveLogin(String login) {
+        cachedSettings.getGame()
+                      .setLogin(login);
+        new SettingsChanged().emit(cachedSettings);
     }
 }

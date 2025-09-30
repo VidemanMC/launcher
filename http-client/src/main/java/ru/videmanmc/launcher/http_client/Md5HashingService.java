@@ -1,4 +1,4 @@
-package ru.videmanmc.launcher.core.service.hashing;
+package ru.videmanmc.launcher.http_client;
 
 import lombok.SneakyThrows;
 import ru.videmanmc.launcher.http_client.github.HashingService;

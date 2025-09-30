@@ -1,13 +1,17 @@
 plugins {
+    id 'application'
     id 'launcher.java-build'
     id 'launcher.version-management'
 }
 
 repositories {
     mavenCentral()
+    maven { url = 'https://repo.bb1.fun/releases' }
 }
 
 dependencies {
+    implementation project(':gui')
+    implementation project(':events')
     implementation project(':constants')
     implementation project(':dtos')
     implementation project(':http-client')
@@ -29,6 +33,17 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockitoVer"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVer"
 }
+
+application {
+    mainClass = "ru.videmanmc.launcher.core.Launcher"
+    applicationDefaultJvmArgs = ['-XX:+EnableDynamicAgentLoading']
+}
+
+shadowJar {
+    archiveBaseName.set("launcher")
+}
+
+tasks.withType(Tar).configureEach { it.enabled = false }
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()

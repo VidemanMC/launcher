@@ -9,7 +9,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.core.dto.LauncherVersion;
 import ru.videmanmc.launcher.core.model.entity.Client;
 import ru.videmanmc.launcher.core.model.value.SyncSettings;
 import ru.videmanmc.launcher.core.model.value.files.IgnoredFiles;
@@ -20,19 +19,18 @@ import ru.videmanmc.launcher.core.service.ClientService;
 import ru.videmanmc.launcher.core.service.GameRunningService;
 import ru.videmanmc.launcher.core.service.assets.JmcccMinecraftCoreService;
 import ru.videmanmc.launcher.core.service.assets.MinecraftCoreService;
-import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
+import ru.videmanmc.launcher.dto.LauncherVersion;
 import ru.videmanmc.launcher.dto.Settings;
 import ru.videmanmc.launcher.http_client.github.FilesChecksumFactory;
 import ru.videmanmc.launcher.http_client.github.GameFilesClient;
 import ru.videmanmc.launcher.http_client.github.GitHubHttpClient;
-import ru.videmanmc.launcher.http_client.github.HashingService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @SuppressWarnings("unused")
-public class GeneralConfiguration extends AbstractModule {
+public class CoreGuiceConfiguration extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -45,7 +43,6 @@ public class GeneralConfiguration extends AbstractModule {
         bind(ClientRepository.class);
 
         bind(ClientService.class);
-        bind(HashingService.class).to(Md5HashingService.class);
         bind(MinecraftCoreService.class).to(JmcccMinecraftCoreService.class);
         bind(GameRunningService.class);
     }
@@ -56,24 +53,6 @@ public class GeneralConfiguration extends AbstractModule {
                          .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
                          .propertyNamingStrategy(PropertyNamingStrategies.KebabCaseStrategy.INSTANCE)
                          .build();
-    }
-
-    @Provides
-    @SneakyThrows
-    LauncherVersion launcherVersion(@InfoProperties Properties properties) {
-        return new LauncherVersion(properties.getProperty("version"));
-    }
-
-    @Provides
-    @InfoProperties
-    @Singleton
-    Properties properties() throws IOException {
-        var props = new Properties();
-        props.load(
-                getClass().getResourceAsStream("/info.properties")
-        );
-
-        return props;
     }
 
     @Provides
@@ -95,6 +74,24 @@ public class GeneralConfiguration extends AbstractModule {
     @Provides
     Settings settings(SettingsRepository settingsRepository) {
         return settingsRepository.getOrLoad();
+    }
+
+    @Provides
+    @SneakyThrows
+    LauncherVersion launcherVersion(@InfoProperties Properties properties) {
+        return new LauncherVersion(properties.getProperty("version"));
+    }
+
+    @Provides
+    @InfoProperties
+    @Singleton
+    Properties properties() throws IOException {
+        var props = new Properties();
+        props.load(
+                getClass().getResourceAsStream("/info.properties")
+        );
+
+        return props;
     }
 
 }
