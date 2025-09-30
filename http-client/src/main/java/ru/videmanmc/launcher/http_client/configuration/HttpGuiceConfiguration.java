@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import ru.videmanmc.launcher.dto.http.BearerToken;
+import ru.videmanmc.launcher.http_client.Md5HashingService;
 import ru.videmanmc.launcher.http_client.github.*;
 
 import java.io.IOException;
@@ -26,15 +27,16 @@ public class HttpGuiceConfiguration extends AbstractModule {
                 .to(GitHubHttpClient.class)
                 .in(Singleton.class);
 
+        bind(HashingService.class).to(Md5HashingService.class);
         bind(PathFormatMapper.class);
     }
 
     @Provides
     HttpRequest.Builder authorizedHttpRequestBuilder(BearerToken bearerToken) {
         return HttpRequest.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .header("Accept", GitHubHttpClient.RAW_CONTENT_MIME)
-                .header("Authorization", bearerToken.bearerToken());
+                          .version(HttpClient.Version.HTTP_1_1)
+                          .header("Accept", GitHubHttpClient.RAW_CONTENT_MIME)
+                          .header("Authorization", bearerToken.bearerToken());
     }
 
     @Provides
@@ -48,7 +50,7 @@ public class HttpGuiceConfiguration extends AbstractModule {
     Properties properties() throws IOException {
         var props = new Properties();
         props.load(getClass()
-                .getResourceAsStream("/credentials.properties"));
+                           .getResourceAsStream("/credentials.properties"));
 
         return props;
     }

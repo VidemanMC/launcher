@@ -1,13 +1,13 @@
 package ru.videmanmc.launcher.service.hashing;
 
 import org.junit.jupiter.api.Test;
-import ru.videmanmc.launcher.core.service.hashing.Md5HashingService;
+import ru.videmanmc.launcher.http_client.Md5HashingService;
 
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Md5HashingServiceTest {
+class Md5HashingServiceTest {
 
     @Test
     void calculateHash_givenValue_hashedCorrectly() {

@@ -48,7 +48,17 @@ public class SettingsRepository {
         return settings;
     }
 
-    public void unload() throws IOException {
+    @SneakyThrows
+    public void unload(Settings settings) {
+        unload0(settings);
+    }
+
+    public void unload() {
+       unload0(settings);
+    }
+
+    @SneakyThrows
+    private void unload0(Settings settings) {
         createConfigDirectory();
 
         objectMapper.writeValue(file, settings);

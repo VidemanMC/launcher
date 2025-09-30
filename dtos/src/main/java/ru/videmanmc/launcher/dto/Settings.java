@@ -16,13 +16,13 @@ public class Settings {
 
     private static final int MINIMAL_COMFORTABLE_RAM = 2048;
 
-    private GameSettings game = new GameSettings();
+    private Game game = new Game();
 
-    private LauncherSettings startup = new LauncherSettings();
+    private Launcher launcher = new Launcher();
 
     @Getter
     @Setter
-    public static final class GameSettings {
+    public static final class Game {
 
         /**
          * Whether to automatically join to server?
@@ -59,7 +59,7 @@ public class Settings {
 
     @Getter
     @Setter
-    public static final class LauncherSettings {
+    public static final class Launcher {
 
         /**
          * Whether to execute in offline mode? <br>
