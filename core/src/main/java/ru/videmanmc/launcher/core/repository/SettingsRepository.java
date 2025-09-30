@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.videmanmc.launcher.core.model.value.Settings;
+import ru.videmanmc.launcher.dto.Settings;
 
 import java.io.File;
 import java.io.IOException;

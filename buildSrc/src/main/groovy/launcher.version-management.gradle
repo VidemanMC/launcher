@@ -6,4 +6,5 @@ ext {
     annotationsVer = '26.0.2'
     jimfsVer = '1.3.0'
     urlEncoderVer = '1.2.0'
+    simpleEventsVer = '2.1.0'
 }

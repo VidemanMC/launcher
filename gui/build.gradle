@@ -11,6 +11,7 @@ repositories {
 dependencies {
     implementation project(':core')
     implementation project(':http-client')
+    implementation project(':events')
 
     implementation "com.google.inject:guice:$guiceVer"
 

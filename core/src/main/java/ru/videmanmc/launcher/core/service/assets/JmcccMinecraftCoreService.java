@@ -17,7 +17,7 @@ import org.to2mbn.jmccc.option.MinecraftDirectory;
 import org.to2mbn.jmccc.option.ServerInfo;
 import org.to2mbn.jmccc.version.Version;
 import ru.videmanmc.launcher.core.jmccc.forge.ForgeDownloadProviderWrapper;
-import ru.videmanmc.launcher.core.model.value.Settings;
+import ru.videmanmc.launcher.dto.Settings;
 
 import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH;
 import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;

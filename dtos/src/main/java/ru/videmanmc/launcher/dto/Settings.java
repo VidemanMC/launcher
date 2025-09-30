@@ -1,15 +1,14 @@
-package ru.videmanmc.launcher.core.model.value;
+package ru.videmanmc.launcher.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import ru.videmanmc.launcher.constants.WorkingDirectoryConstants;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
-import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH;
-import static ru.videmanmc.launcher.constants.WorkingDirectoryConstants.MAIN_DIRECTORY_PATH;
 
 @Getter
 @Setter
@@ -33,7 +32,7 @@ public class Settings {
         /**
          * Client`s home dir
          */
-        private File directory = new File(MAIN_DIRECTORY_PATH, CLIENT_SUBDIRECTORY_PATH);
+        private File directory = new File(WorkingDirectoryConstants.MAIN_DIRECTORY_PATH, WorkingDirectoryConstants.CLIENT_SUBDIRECTORY_PATH);
 
         /**
          * Available RAM for running Minecraft

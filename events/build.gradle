@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+    id 'launcher.java-build'
+    id 'launcher.version-management'
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.bb1.fun/releases' }
+}
+
+dependencies {
+    implementation project(':dtos')
+
+    implementation "fun.bb1:simple-events:$simpleEventsVer"
+}
