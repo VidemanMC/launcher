@@ -9,6 +9,8 @@ repositories {
     maven { url = 'https://repo.bb1.fun/releases' }
 }
 
+
+
 dependencies {
     implementation project(':gui')
     implementation project(':events')
@@ -40,6 +42,7 @@ application {
 }
 
 shadowJar {
+    mergeServiceFiles()
     archiveBaseName.set("launcher")
 }
 
