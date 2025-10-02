@@ -31,7 +31,7 @@ public class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
                                .collect(Collectors.joining("<br>"));
         return GENERAL_ERROR
                 .formatted(
-                        throwable.getMessage(),
+                        throwable.toString(),
                         stacktrace
                 );
     }

@@ -45,13 +45,13 @@ public class Bootloader {
     void start() {
         try {
             startingService.start();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             showErrorModal(e);
         }
     }
 
-    public void showErrorModal(Exception e) {
-        new ExceptionDialog(formatGeneral(e));
+    public void showErrorModal(Throwable throwable) {
+        new ExceptionDialog(formatGeneral(throwable));
     }
 
     private String formatGeneral(Throwable throwable) {
@@ -60,7 +60,7 @@ public class Bootloader {
                                .collect(Collectors.joining("<br>"));
         return GENERAL_ERROR
                 .formatted(
-                        throwable.getMessage(),
+                        throwable.toString(),
                         stacktrace
                 );
     }

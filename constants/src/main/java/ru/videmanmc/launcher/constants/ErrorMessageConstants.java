@@ -13,7 +13,7 @@ public class ErrorMessageConstants {
             <h2>Stacktrace</h2>
             <p>%s</p>
             <p></p>
-            <a href="https://github.com/VidemanMC/launcher/issues"
+            <a href="https://github.com/VidemanMC/launcher/issues/new?template=ошибка.md"
                target="_blank"
                rel="noopener noreferrer"
                style="display:inline-block; padding:10px 20px; background-color:#007bff; color:#fff; text-decoration:none;">
