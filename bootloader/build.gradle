@@ -36,7 +36,7 @@ dependencies {
     implementation project(':dtos')
     implementation project(':http-client')
 
-    implementation platform("com.fasterxml.jackson:jackson-bom:2.19.1")
+    implementation platform("com.fasterxml.jackson:jackson-bom:$jacksonVer")
     implementation "com.fasterxml.jackson.core:jackson-databind"
     implementation "com.google.inject:guice:$guiceVer"
 

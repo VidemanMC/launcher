@@ -11,7 +11,8 @@ repositories {
 dependencies {
     implementation project(':constants')
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'
+    compileOnly platform("com.fasterxml.jackson:jackson-bom:$jacksonVer")
+    compileOnly "com.fasterxml.jackson.core:jackson-databind"
 
     compileOnly "org.projectlombok:lombok:$lombokVer"
     annotationProcessor "org.projectlombok:lombok:$lombokVer"
