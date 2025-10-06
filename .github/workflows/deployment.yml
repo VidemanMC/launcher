@@ -10,7 +10,7 @@ env:
   auth_token: ${{ secrets.AUTH_TOKEN }}
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-linux-bootloader:
