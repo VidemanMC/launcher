@@ -72,6 +72,8 @@ jobs:
     name: Windows Bootloader
     if: github.event.pull_request.merged == true
     runs-on: windows-latest
+    env:
+      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
     steps:
       - name: Cache Gradle packages
         uses: actions/cache@v4
