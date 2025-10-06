@@ -185,7 +185,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
 
     private List<String> cachedHashNamePairs;
 
-    private List<String> getCachedNameHashPairs() {
+    private List<String> getCachedNameHashPairs() { // bug here, cached var is null after first evaluation
         if (cachedHashNamePairs == null) {
             cachedHashNamePairs = downloadNameHashPairs();
         }
@@ -195,11 +195,12 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
 
     @SneakyThrows
     private List<String> downloadNameHashPairs() {
-        var downloadedHashesString = new String(
+        var downloadedHashes = new String(
                 download(FILE_NAME_HASHES)
                         .contents(), StandardCharsets.UTF_8
         );
-        return Stream.of(downloadedHashesString.split("\n"))
+
+        return Stream.of(downloadedHashes.split("\n"))
                      .toList();
     }
 }

@@ -32,6 +32,12 @@ public class HttpGuiceConfiguration extends AbstractModule {
     }
 
     @Provides
+    @Singleton
+    GitHubHttpClient gitHubHttpClient(HttpRequest.Builder builder, PathFormatMapper pathFormatMapper, FilesChecksumFactory filesChecksumFactory) {
+        return new GitHubHttpClient(builder, pathFormatMapper, filesChecksumFactory);
+    }
+
+    @Provides
     HttpRequest.Builder authorizedHttpRequestBuilder(BearerToken bearerToken) {
         return HttpRequest.newBuilder()
                           .version(HttpClient.Version.HTTP_1_1)
