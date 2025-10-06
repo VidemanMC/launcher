@@ -4,9 +4,13 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+  workflow_dispatch:
 
 env:
   auth_token: ${{ secrets.AUTH_TOKEN }}
+
+permissions:
+  contents: read
 
 jobs:
   build-linux-bootloader:
@@ -73,6 +77,12 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: windows-latest
     steps:
+      - name: Setup Java JDK
+        uses: actions/setup-java@v5.0.0
+        with:
+          distribution: corretto
+          java-version: 21
+
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -85,8 +95,6 @@ jobs:
 
       - name: Build Binary
         run: ./gradlew.bat --no-daemon windowsPackaging
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
         
       - name: Upload Binary
         uses: actions/upload-artifact@v4
