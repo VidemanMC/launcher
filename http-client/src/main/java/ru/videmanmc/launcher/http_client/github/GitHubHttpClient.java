@@ -11,7 +11,6 @@ import ru.videmanmc.launcher.http_client.exception.HttpDownloadException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -66,7 +65,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                 HttpResponse.BodyHandlers.ofByteArray()
         );
 
-        validateResponse(response.headers());
+        validateResponse(response);
 
         var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
 
@@ -84,7 +83,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                 HttpResponse.BodyHandlers.ofByteArray()
         );
 
-        validateResponse(response.headers());
+        validateResponse(response);
 
         var jsonNode = objectMapper.readTree(response.body());
 
@@ -124,7 +123,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                 HttpResponse.BodyHandlers.ofByteArray()
         );
 
-        validateResponse(response.headers());
+        validateResponse(response);
 
         var hash = trim(info.hash());
 
@@ -143,10 +142,11 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
     /**
      * Validate status codes referencing <a href="https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api?apiVersion=2022-11-28">GitHub Rest Api Docs</a>
      */
-    private void validateResponse(HttpHeaders headers) throws HttpDownloadException {
-        headers.firstValue(RATE_LIMIT_REMAINING_HEADER)
-               .filter(limit -> !"0".equals(limit))
-               .orElseThrow(HttpDownloadException::new);
+    private void validateResponse(HttpResponse<?> response) throws HttpDownloadException {
+        response.headers()
+                .firstValue(RATE_LIMIT_REMAINING_HEADER)
+                .filter(limit -> !"0".equals(limit))
+                .orElseThrow(HttpDownloadException::new);
     }
 
     @Override
