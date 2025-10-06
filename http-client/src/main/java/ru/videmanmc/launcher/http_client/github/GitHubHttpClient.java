@@ -1,6 +1,5 @@
 package ru.videmanmc.launcher.http_client.github;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -10,7 +9,6 @@ import lombok.SneakyThrows;
 import ru.videmanmc.launcher.dto.http.*;
 import ru.videmanmc.launcher.http_client.exception.HttpDownloadException;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -23,6 +21,8 @@ import java.util.stream.Stream;
 public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteChecksumCalculator {
 
     public static final String RAW_CONTENT_MIME = "application/vnd.github.raw+json";
+
+    public static final String RATE_LIMIT_REMAINING_HEADER = "x-ratelimit-remaining";
 
     private static final String MODPACK_BASE_URL = "https://api.github.com/repos/VidemanMC/modpack";
 
@@ -60,16 +60,16 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                 ));
         var request = httpBuilder.uri(uri)
                                  .build();
-        byte[] response = httpClient.send(
-                                            request,
-                                            HttpResponse.BodyHandlers.ofByteArray()
-                                    )
-                                    .body();
-        validateStatusCode(response);
+        var response = httpClient.send(
+                request,
+                HttpResponse.BodyHandlers.ofByteArray()
+        );
+
+        validateResponse(response);
 
         var abstractFilePath = pathFormatMapper.remoteToAbstractFormat(filePath);
 
-        return new GameFile(response, abstractFilePath);
+        return new GameFile(response.body(), abstractFilePath);
     }
 
     @Override
@@ -78,14 +78,14 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
         var uri = URI.create(LATEST_RELEASES_URI);
         var request = httpBuilder.uri(uri)
                                  .build();
-        byte[] response = httpClient.send(
-                                            request,
-                                            HttpResponse.BodyHandlers.ofByteArray()
-                                    )
-                                    .body();
-        validateStatusCode(response);
+        var response = httpClient.send(
+                request,
+                HttpResponse.BodyHandlers.ofByteArray()
+        );
 
-        var jsonNode = objectMapper.readTree(response);
+        validateResponse(response);
+
+        var jsonNode = objectMapper.readTree(response.body());
 
         return constructBinaryInfo(jsonNode, namePrefix);
     }
@@ -118,19 +118,18 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                                          info.downloadUrl()
                                  ))
                                  .build();
-        byte[] response = httpClient.send(
-                                            request,
-                                            HttpResponse.BodyHandlers.ofByteArray()
-                                    )
-                                    .body();
+        var response = httpClient.send(
+                request,
+                HttpResponse.BodyHandlers.ofByteArray()
+        );
 
-        validateStatusCode(response);
+        validateResponse(response);
 
         var hash = trim(info.hash());
 
         return new Binary(
                 new Hash(hash),
-                response,
+                response.body(),
                 info.name()
         );
     }
@@ -143,28 +142,11 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
     /**
      * Validate status codes referencing <a href="https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api?apiVersion=2022-11-28">GitHub Rest Api Docs</a>
      */
-    private void validateStatusCode(byte[] response) throws HttpDownloadException {
-        try {
-            var json = objectMapper.readTree(response);
-            var statusNode = json.get("status");
-
-            if (statusNode == null) {
-                return;
-            }
-
-            var status = statusNode.asText();
-            switch (status) {
-                case "403", "429" -> throw new HttpDownloadException();
-                case "404" -> throw new IllegalStateException("Existing resource not found");
-                default -> {
-                    // ok, keep working
-                }
-            }
-        } catch (JsonProcessingException e) {
-            // ok, content is binary file
-        } catch (IOException e) {
-            throw new HttpDownloadException();
-        }
+    private void validateResponse(HttpResponse<?> response) throws HttpDownloadException {
+        response.headers()
+                .firstValue(RATE_LIMIT_REMAINING_HEADER)
+                .filter(limit -> !"0".equals(limit))
+                .orElseThrow(HttpDownloadException::new);
     }
 
     @Override
