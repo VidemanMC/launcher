@@ -87,6 +87,8 @@ public class MainScreen implements LauncherScreen, IEventListener {
                 return;
             }
 
+            playButton.setEnabled(false);
+
             new Thread(() -> new GameLaunchInitiated().emit(new GameLaunchInitiated.Payload(
                     textField.getText(),
                     !offlineCheckbox.isSelected()
