@@ -96,7 +96,7 @@ jobs:
       - name: Install InnoSetup
         run: |
           Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe?site=1' -OutFile "$env:TEMP\\is.exe"
-          Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/S' -Wait
+          Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CURRENTUSER /LANG=russian' -Wait
           Remove-Item -Path "$env:TEMP\\is.exe"
 
       - name: Build Binary
