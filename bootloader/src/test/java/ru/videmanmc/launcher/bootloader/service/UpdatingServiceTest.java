@@ -59,10 +59,10 @@ class UpdatingServiceTest {
 
         when(binaryRepository.findByPrefix(LAUNCHER_PREFIX))
                 .thenReturn(localBinary);
-        when(binaryClient.getBinary(binaryInfo))
-                .thenReturn(remoteBinary);
         when(binaryClient.getInfoByPrefix(LAUNCHER_PREFIX))
                 .thenReturn(binaryInfo);
+        when(binaryClient.getBinary(binaryInfo))
+                .thenReturn(remoteBinary);
 
         // act
         updatingService.update();
@@ -93,7 +93,7 @@ class UpdatingServiceTest {
     }
 
     private BinaryInfo binaryInfo() {
-        return new BinaryInfo("a", "b", "c");
+        return new BinaryInfo("a", "b", "cc");
     }
 
     private Binary localBinary() {
