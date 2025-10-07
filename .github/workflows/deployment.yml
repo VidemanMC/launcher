@@ -74,7 +74,7 @@ jobs:
 
   build-windows-bootloader:
     name: Windows Bootloader
-    if: github.event.pull_request.merged == true
+#    if: github.event.pull_request.merged == true
     runs-on: windows-latest
     steps:
       - name: Setup Java JDK
@@ -92,6 +92,12 @@ jobs:
             ~/.gradle/wrapper
  
       - uses: actions/checkout@v4
+
+      - name: Install InnoSetup
+        run: |
+          Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe?site=1' -OutFile "$env:TEMP\\is.exe"
+          Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/S' -Wait
+          Remove-Item -Path "$env:TEMP\\is.exe"
 
       - name: Build Binary
         run: ./gradlew.bat --no-daemon windowsPackaging
@@ -133,10 +139,10 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs:
-      - build-linux-bootloader
-      - build-mac-bootloader
+#      - build-linux-bootloader
+#      - build-mac-bootloader
       - build-windows-bootloader
-      - build-launcher
+#      - build-launcher
     steps:
       - name: Cache Gradle packages
         uses: actions/cache@v4
