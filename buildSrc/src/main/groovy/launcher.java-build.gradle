@@ -1,0 +1,35 @@
+import java.nio.charset.StandardCharsets
+
+plugins {
+    id 'java'
+    id 'idea'
+    id "com.gradleup.shadow"
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+    }
+}
+
+shadowJar {
+    archiveVersion.set(version as String)
+    archiveClassifier.set(null)
+
+//    minimize()
+}
+
+jar.enabled = false // чтобы не генерить второй jar
+tasks.jar.dependsOn(shadowJar)
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = StandardCharsets.UTF_8
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+
