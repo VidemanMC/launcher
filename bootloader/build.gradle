@@ -1,0 +1,135 @@
+import io.github.fvarrui.javapackager.gradle.PackageTask
+
+import java.nio.file.Files
+
+import static io.github.fvarrui.javapackager.model.Platform.*
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.github.fvarrui:javapackager:1.7.6'
+    }
+}
+
+plugins {
+    id 'application'
+    id 'launcher.java-build'
+    id 'launcher.version-management'
+}
+
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
+
+application {
+    mainClass = "ru.videmanmc.launcher.bootloader.Bootloader"
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.bb1.fun/releases' }
+}
+
+dependencies {
+    implementation project(':constants')
+    implementation project(':gui')
+    implementation project(':dtos')
+    implementation project(':http-client')
+
+    implementation platform("com.fasterxml.jackson:jackson-bom:$jacksonVer")
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.google.inject:guice:$guiceVer"
+
+    compileOnly "org.jetbrains:annotations:$annotationsVer"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+
+    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation "org.mockito:mockito-core:$mockitoVer"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVer"
+
+    testImplementation "com.google.jimfs:jimfs:$jimfsVer"
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+javapackager {
+    // common configuration
+    mainClass = 'ru.videmanmc.launcher.bootloader.Bootloader'
+    name = rootProject.name
+    displayName = 'VidemanMC Launcher'
+
+    organizationName = 'VidemanMC'
+    organizationUrl = 'https://videmanmc.ru'
+
+    generateInstaller = true
+    bundleJre = false
+}
+
+tasks.register("windowsPackaging", PackageTask) {
+    dependsOn(build)
+
+    platform = windows
+    winConfig {
+        fileVersion = version
+        icoFile = file("../assets/icons/icon256.ico")
+        generateMsi = false
+        setupMode = 'installForCurrentUser'
+        setupLanguages = [russian: "compiler:Languages/Russian.isl"]
+        removeOldLibs = true
+    }
+}
+
+tasks.register("linuxPackaging", PackageTask) {
+    dependsOn tasks.prepareAppImageTool
+
+    platform = linux
+
+    def iconName = 'icon256'
+    def iconPath = "../assets/icons/${iconName}.png"
+    extra relativeIconPath: iconPath, iconName: iconName
+
+    linuxConfig {
+        pngFile = file(iconPath)
+        categories = ['Game']
+    }
+}
+
+// JavaPackager trying to download appimagetool using broken link, i download one using correct link
+tasks.register('prepareAppImageTool') {
+    dependsOn(build)
+
+    def assets = file("build/assets").toPath()
+    new ProcessBuilder(['wget', '-O', 'appimagetool', 'https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage'])
+            .directory(projectDir)
+            .start()
+
+    doLast {
+        Files.createDirectories(assets)
+
+        def appImageToolPath = assets.resolve("appimagetool")
+        Files.move(file('appimagetool').toPath(), appImageToolPath)
+        appImageToolPath.toFile().setExecutable(true)
+    }
+}
+
+tasks.register("macPackaging", PackageTask) {
+    dependsOn(build)
+
+    platform = mac
+    macConfig {
+        icnsFile = file("../assets/icons/icon.icns")
+    }
+}
+
+processResources {
+    from('../assets/icons') {
+        include 'icon64.png'
+    }
+}

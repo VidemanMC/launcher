@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'launcher.java-build'
+    id 'launcher.version-management'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':constants')
+
+    compileOnly platform("com.fasterxml.jackson:jackson-bom:$jacksonVer")
+    compileOnly "com.fasterxml.jackson.core:jackson-databind"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}

@@ -1,0 +1,30 @@
+plugins {
+    id 'launcher.java-build'
+    id 'launcher.version-management'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':constants')
+    implementation project(':dtos')
+
+    implementation "com.uwyn:urlencoder:$urlEncoderVer"
+
+    compileOnly platform("com.fasterxml.jackson:jackson-bom:$jacksonVer")
+    compileOnly "com.fasterxml.jackson.core:jackson-databind"
+    compileOnly "com.google.inject:guice:$guiceVer"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}
+
+tasks.withType(ProcessResources).configureEach {
+    filesMatching("credentials.properties") {
+        expand([
+                auth_token: System.getenv("auth_token")
+        ])
+    }
+}
