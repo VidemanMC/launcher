@@ -32,7 +32,7 @@ public class UpdatingService {
             return downloadRemoteBinary(remoteBinaryInfo);
         }
 
-        boolean hashesNotEqual = binary.hash()
+        boolean hashesNotEqual = !binary.hash()
                                        .hash()
                                        .equals(remoteBinaryInfo.hash());
 

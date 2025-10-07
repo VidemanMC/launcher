@@ -104,7 +104,7 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
                               var hash = jsonAsset.get("digest")
                                                   .asText();
 
-                              return new BinaryInfo(name, downloadUrl, hash);
+                              return new BinaryInfo(name, downloadUrl, trim(hash));
                           })
                           .findFirst()
                           .orElseThrow(() -> new IllegalStateException("Asset '" + namePrefix + "*' is not found on GitHub"));
@@ -123,10 +123,8 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
 
         validateResponse(response);
 
-        var hash = trim(info.hash());
-
         return new Binary(
-                new Hash(hash),
+                new Hash(info.hash()),
                 response.body(),
                 info.name()
         );
