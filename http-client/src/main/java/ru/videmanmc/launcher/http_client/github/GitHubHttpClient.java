@@ -22,8 +22,6 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
 
     public static final String RAW_CONTENT_MIME = "application/vnd.github.raw+json";
 
-    public static final String RATE_LIMIT_REMAINING_HEADER = "x-ratelimit-remaining";
-
     private static final String MODPACK_BASE_URL = "https://api.github.com/repos/VidemanMC/modpack";
 
     private static final String DOWNLOAD_URI_TEMPLATE = MODPACK_BASE_URL + "/contents/{path}";
@@ -143,10 +141,12 @@ public class GitHubHttpClient implements GameFilesClient, BinaryClient, RemoteCh
      * Validate status codes referencing <a href="https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api?apiVersion=2022-11-28">GitHub Rest Api Docs</a>
      */
     private void validateResponse(HttpResponse<?> response) throws HttpDownloadException {
-        response.headers()
-                .firstValue(RATE_LIMIT_REMAINING_HEADER)
-                .filter(limit -> !"0".equals(limit))
-                .orElseThrow(HttpDownloadException::new);
+        switch (response.statusCode()) {
+            case 403, 429, 404 -> throw new HttpDownloadException();
+            default -> {
+                // ok, keep working
+            }
+        }
     }
 
     @Override
