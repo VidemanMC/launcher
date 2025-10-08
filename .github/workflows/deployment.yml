@@ -106,6 +106,7 @@ jobs:
 
       - name: Build Binary
         run: |
+           $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'User')
           ./gradlew.bat --no-daemon windowsPackaging
 
       - name: Upload Binary
