@@ -1,0 +1,187 @@
+name: Deployment
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  auth_token: ${{ secrets.AUTH_TOKEN }}
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux-bootloader:
+    name: Linux Bootloader
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    env:
+      ARCH: x86_64
+    steps:
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          key: gradle-cache
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      - uses: actions/checkout@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Binary
+        run: ./gradlew --no-daemon linuxPackaging
+        
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-bootloader
+          path: |
+            bootloader/build/*.deb
+            bootloader/build/*.appimage
+            bootloader/build/*.rpm
+
+  build-mac-bootloader:
+    name: MacOS Bootloader
+    if: github.event.pull_request.merged == true
+    runs-on: macos-latest
+    steps:
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          key: gradle-cache
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+      
+      - uses: actions/checkout@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Binary
+        run: ./gradlew --no-daemon macPackaging
+        
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-bootloader
+          path: bootloader/build/*.dmg
+
+  build-windows-bootloader:
+    name: Windows Bootloader
+    if: github.event.pull_request.merged == true
+    runs-on: windows-latest
+    steps:
+      - name: Install Inno
+        run: |
+          Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe?site=1' -OutFile "$env:TEMP\\is.exe"
+          Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /CURRENTUSER /LANG=russian /DIR="expand:{sd}/iscc"' -Wait
+          Remove-Item -Path "$env:TEMP\\is.exe"
+          
+          $oldPath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+          $newPath = "$oldPath;$env:SystemDrive\iscc"
+          
+          [System.Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v5.0.0
+        with:
+          distribution: corretto
+          java-version: 21
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          key: gradle-cache
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      - uses: actions/checkout@v4
+
+      - name: Build Binary
+        run: |
+           $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+          ./gradlew.bat --no-daemon windowsPackaging
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-bootloader
+          path: bootloader/build/*.exe
+
+  build-launcher:
+    name: Launcher Binary
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          key: gradle-cache
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            
+      - uses: actions/checkout@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Binary
+        run: ./gradlew --no-daemon :core:build
+        
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: launcher
+          path: core/build/libs/*.jar
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - build-linux-bootloader
+      - build-mac-bootloader
+      - build-windows-bootloader
+      - build-launcher
+    steps:
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          key: gradle-cache
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      - uses: actions/checkout@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create binaries directory
+        run: mkdir -p binaries
+
+      - name: Download All Binaries
+        uses: actions/download-artifact@v5
+        with:
+          path: binaries
+          merge-multiple: true
+
+      - name: Get Tag
+        id: get_tag
+        run: echo "TAG_NAME=$(./gradlew -q --no-daemon printVersion)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "binaries/*"
+          draft: false
+          make_latest: true
+          tag_name: v${{ steps.get_tag.outputs.TAG_NAME }}
+          

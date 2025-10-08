@@ -1,0 +1,9 @@
+rootProject.name = 'videmanmc-launcher'
+
+include 'core',
+        'gui',
+        'constants',
+        'http-client',
+        'bootloader',
+        'events',
+        'dtos'

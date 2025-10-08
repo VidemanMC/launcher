@@ -1,0 +1,28 @@
+plugins {
+    id 'launcher.java-build' //todo пока что, потом убрать так как будет clojure
+    id 'launcher.version-management'
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.bb1.fun/releases' }
+}
+
+dependencies {
+    implementation project(':events')
+    implementation project(':dtos')
+
+    implementation "com.google.inject:guice:$guiceVer"
+
+    compileOnly "org.projectlombok:lombok:$lombokVer"
+    annotationProcessor "org.projectlombok:lombok:$lombokVer"
+}
+
+tasks.withType(ProcessResources).configureEach {
+    filesMatching("info.properties") {
+        expand(version: version)
+    }
+    from('../assets/icons') {
+        include 'icon64.png'
+    }
+}
