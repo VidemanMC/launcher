@@ -1,0 +1,107 @@
+package ru.videmanmc.launcher.bootloader.service;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.videmanmc.launcher.bootloader.repository.BinaryRepository;
+import ru.videmanmc.launcher.dto.http.Binary;
+import ru.videmanmc.launcher.dto.http.BinaryInfo;
+import ru.videmanmc.launcher.dto.http.Hash;
+import ru.videmanmc.launcher.http_client.exception.HttpDownloadException;
+import ru.videmanmc.launcher.http_client.github.GitHubHttpClient;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static ru.videmanmc.launcher.constants.BinariesNamingConstants.LAUNCHER_PREFIX;
+
+@ExtendWith(MockitoExtension.class)
+class UpdatingServiceTest {
+
+    @Mock
+    private BinaryRepository binaryRepository;
+
+    @Mock
+    private GitHubHttpClient binaryClient;
+
+    @InjectMocks
+    private UpdatingService updatingService;
+
+
+    @Test
+    void update_binaryNotExists_downloadsBinary() throws HttpDownloadException {
+        // arrange
+        var binaryInfo = binaryInfo();
+        var binary = localBinary();
+
+        when(binaryRepository.findByPrefix(LAUNCHER_PREFIX))
+                .thenReturn(null);
+        when(binaryClient.getBinary(binaryInfo))
+                .thenReturn(binary);
+        when(binaryClient.getInfoByPrefix(LAUNCHER_PREFIX))
+                .thenReturn(binaryInfo);
+
+        // act
+        updatingService.update();
+
+        // assert
+        verify(binaryClient).getBinary(binaryInfo);
+    }
+
+    @Test
+    void update_binaryExistsAndHashesDifferent_downloadsBinary() throws HttpDownloadException {
+        // arrange
+        var binaryInfo = binaryInfo();
+        var localBinary = localBinary();
+        var remoteBinary = remoteBinary();
+
+        when(binaryRepository.findByPrefix(LAUNCHER_PREFIX))
+                .thenReturn(localBinary);
+        when(binaryClient.getInfoByPrefix(LAUNCHER_PREFIX))
+                .thenReturn(binaryInfo);
+        when(binaryClient.getBinary(binaryInfo))
+                .thenReturn(remoteBinary);
+
+        // act
+        updatingService.update();
+
+        // assert
+        verify(binaryClient).getBinary(binaryInfo);
+    }
+
+
+    @Test
+    void update_binaryExistsAndHashesEqual_returnsLocalBinaryName() throws HttpDownloadException {
+        // arrange
+        var binaryInfo = binaryInfo();
+        var localBinary = localBinary();
+
+        when(binaryRepository.findByPrefix(LAUNCHER_PREFIX))
+                .thenReturn(null);
+        when(binaryClient.getInfoByPrefix(LAUNCHER_PREFIX))
+                .thenReturn(binaryInfo);
+        when(binaryClient.getBinary(binaryInfo))
+                .thenReturn(localBinary);
+
+        // act
+        var updatedBinaryName = updatingService.update();
+
+        // assert
+        assertEquals(localBinary.name(), updatedBinaryName);
+    }
+
+    private BinaryInfo binaryInfo() {
+        return new BinaryInfo("a", "b", "cc");
+    }
+
+    private Binary localBinary() {
+        return new Binary(new Hash("c"), new byte[0], "a");
+    }
+
+    private Binary remoteBinary() {
+        return new Binary(new Hash("cc"), new byte[0], "a");
+    }
+
+}
