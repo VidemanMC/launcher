@@ -35,7 +35,7 @@ jobs:
 
       - name: Build Binary
         run: ./gradlew --no-daemon linuxPackaging
-        
+
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
@@ -57,7 +57,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-      
+
       - uses: actions/checkout@v4
 
       - name: Grant execute permission for gradlew
@@ -65,7 +65,7 @@ jobs:
 
       - name: Build Binary
         run: ./gradlew --no-daemon macPackaging
-        
+
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
@@ -74,9 +74,20 @@ jobs:
 
   build-windows-bootloader:
     name: Windows Bootloader
-#    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: windows-latest
     steps:
+      - name: Install Inno
+        run: |
+          Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe?site=1' -OutFile "$env:TEMP\\is.exe"
+          Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /CURRENTUSER /LANG=russian /DIR="expand:{sd}/iscc"' -Wait
+          Remove-Item -Path "$env:TEMP\\is.exe"
+          
+          $oldPath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+          $newPath = "$oldPath;$env:SystemDrive\iscc"
+          
+          [System.Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+
       - name: Setup Java JDK
         uses: actions/setup-java@v5.0.0
         with:
@@ -90,18 +101,14 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
- 
+
       - uses: actions/checkout@v4
 
-      - name: Install InnoSetup
-        run: |
-          Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe?site=1' -OutFile "$env:TEMP\\is.exe"
-          Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/S' -Wait
-          Remove-Item -Path "$env:TEMP\\is.exe"
-
       - name: Build Binary
-        run: ./gradlew.bat --no-daemon windowsPackaging
-        
+        run: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+          ./gradlew.bat --no-daemon windowsPackaging
+
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
@@ -120,7 +127,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            
+
       - uses: actions/checkout@v4
 
       - name: Grant execute permission for gradlew
@@ -128,7 +135,7 @@ jobs:
 
       - name: Build Binary
         run: ./gradlew --no-daemon :core:build
-        
+
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
@@ -139,10 +146,10 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs:
-#      - build-linux-bootloader
-#      - build-mac-bootloader
+      - build-linux-bootloader
+      - build-mac-bootloader
       - build-windows-bootloader
-#      - build-launcher
+      - build-launcher
     steps:
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -177,4 +184,3 @@ jobs:
           draft: false
           make_latest: true
           tag_name: v${{ steps.get_tag.outputs.TAG_NAME }}
-          
