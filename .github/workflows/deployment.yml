@@ -82,6 +82,11 @@ jobs:
           Invoke-WebRequest -Uri 'https://jrsoftware.org/download.php/is.exe?site=1' -OutFile "$env:TEMP\\is.exe"
           Start-Process -FilePath "$env:TEMP\\is.exe" -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /CURRENTUSER /LANG=russian /DIR="expand:{sd}/iscc"' -Wait
           Remove-Item -Path "$env:TEMP\\is.exe"
+          
+          $oldPath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+          $newPath = "$oldPath;$env:SystemDrive\iscc"
+          
+          [System.Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
 
       - name: Setup Java JDK
         uses: actions/setup-java@v5.0.0
@@ -101,7 +106,6 @@ jobs:
 
       - name: Build Binary
         run: |
-          $env:Path += "$env:SystemDrive/iscc" # for JavaPackager plugin being able to find inno
           ./gradlew.bat --no-daemon windowsPackaging
 
       - name: Upload Binary
