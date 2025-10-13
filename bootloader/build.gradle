@@ -1,4 +1,8 @@
 import io.github.fvarrui.javapackager.gradle.PackageTask
+import io.github.fvarrui.javapackager.model.LinuxConfig
+import io.github.fvarrui.javapackager.model.MacConfig
+import io.github.fvarrui.javapackager.model.WindowsConfig
+import io.github.fvarrui.javapackager.model.WindowsSigning
 
 import java.nio.file.Files
 
@@ -76,14 +80,20 @@ tasks.register("windowsPackaging", PackageTask) {
     dependsOn(build)
 
     platform = windows
-    winConfig {
+
+    def signingProps = new WindowsSigning()
+    signingProps.keystore = file("assets/installer.jks")
+    signingProps.storepass = 'great.job.aleksey'
+
+    winConfig(({
         fileVersion = version
         icoFile = file("../assets/icons/icon256.ico")
         generateMsi = false
         setupMode = 'installForCurrentUser'
         setupLanguages = [russian: "compiler:Languages/Russian.isl"]
         removeOldLibs = true
-    }
+        signing = signingProps
+    } as Closure<WindowsConfig>))
 }
 
 tasks.register("linuxPackaging", PackageTask) {
@@ -95,10 +105,10 @@ tasks.register("linuxPackaging", PackageTask) {
     def iconPath = "../assets/icons/${iconName}.png"
     extra relativeIconPath: iconPath, iconName: iconName
 
-    linuxConfig {
+    linuxConfig(({
         pngFile = file(iconPath)
         categories = ['Game']
-    }
+    } as Closure<LinuxConfig>))
 }
 
 // JavaPackager trying to download appimagetool using broken link, i download one using correct link
@@ -123,9 +133,9 @@ tasks.register("macPackaging", PackageTask) {
     dependsOn(build)
 
     platform = mac
-    macConfig {
+    macConfig(({
         icnsFile = file("../assets/icons/icon.icns")
-    }
+    } as Closure<MacConfig>))
 }
 
 processResources {
